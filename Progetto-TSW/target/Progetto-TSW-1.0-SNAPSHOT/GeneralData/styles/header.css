@@ -1,0 +1,79 @@
+.top-bar, .main-bar {
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+}
+
+.top-bar-container, .main-bar-container {
+    width: 700px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.top-bar-container span {
+    font-weight: 500;
+    color: #333333;
+    font-size: 0.7rem;
+    align-items: center;
+    display: flex;
+}
+
+.top-bar-container span svg {
+    margin: 1em 0.7em 1em 0;
+    width: 1.4em;
+    height: 1.4em;
+}
+
+.main-bar {
+    background-color: white;
+}
+
+.logo {
+    width: 130px;
+    height: 19px;
+}
+
+.main-bar-container {
+    align-items: center;
+    width: 1300px;
+    height: 5.5em;
+}
+
+.main-bar-container div nav a, .main-bar-container div a {
+    text-decoration: none;
+    color: black;
+    margin: 10px;
+    font-weight: 300;
+}
+
+.main-bar-container div nav a:hover, .main-bar-container div nav a.selected:hover {
+    color: #6d76d7;
+}
+
+.main-bar-container div nav a.selected {
+    font-weight: 600;
+    color: #222C9B;
+}
+
+.main-bar-container div .cart {
+    margin-right: 0;
+}
+
+.cart-items-counter {
+    font-weight: 300;
+    font-size: 0.8em;
+}
+
+.user-items {
+    display: flex;
+    align-items: flex-start;
+}
+
+.main-bar.fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px #00000019;
+}

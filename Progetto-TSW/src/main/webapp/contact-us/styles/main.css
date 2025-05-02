@@ -1,0 +1,101 @@
+.main-cont {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.contact-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 54em;
+    margin: 4em;
+    padding: 2.5em;
+
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: black 1px 2px 5px 0;
+}
+
+.titles {
+    display: flex;
+    justify-content: left;
+    flex-direction: column;
+}
+
+.titles * {
+    width: 100%;
+    margin: 0;
+}
+
+.contact-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.contact-container form .div-label {
+    margin-top: 20px;
+    font-weight: 500;
+}
+
+.required {
+    color: red;
+    font-weight: bold;
+}
+
+/* Chrome, Safari, Edge, Opera */
+#orderId::-webkit-outer-spin-button,
+#orderId::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+#orderId {
+    -moz-appearance: textfield;
+}
+
+#description {
+    resize: none;
+}
+
+select, input, textarea {
+    font-family: "Poppins", sans-serif;
+    width: 50em;
+    margin: 0;
+    padding: 0.6em;
+    outline: none;
+    border: black 1px solid;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.personal-informations {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.p-info-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.p-info-col div input, .p-info-col div select {
+    width: 22em;
+}
+
+input[type="submit"] {
+    cursor: pointer;
+    width: 20em;
+    margin-top: 20px;
+    border-radius: 25px;
+    border: none;
+    background-color: #6f76be;
+    color: white;
+    transition: 0.3s ease;
+}
+
+input[type="submit"]:hover {
+    background-color: #5361c3;
+    transition: 0.3s ease;
+}
