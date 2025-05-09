@@ -4,7 +4,7 @@
 
 <!DOCTYPE html>
 <html>
-  <% String pageName = "DA MODIFICARE"; %>
+  <% String pageName = "reservedArea"; %>
   <%@ include file="/includes/head.jsp" %>
   <body>
     <%@ include file="/includes/header.jsp" %>
