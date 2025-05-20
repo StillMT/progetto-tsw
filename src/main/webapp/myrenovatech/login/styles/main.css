@@ -1,0 +1,91 @@
+.login-container {
+    margin: 5em;
+    border-radius: 25px;
+    padding: 2.5em;
+    background-color: white;
+    box-shadow: black 1px 2px 5px 0;
+}
+
+#login {
+    width: 25em;
+}
+
+#register {
+    width: 40em;
+}
+
+h2 {
+    margin: 0;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+.div-label {
+    margin-top: 20px;
+    font-weight: 500;
+}
+
+input, select {
+    font-family: "Poppins", sans-serif;
+    width: 100%;
+    margin: 0;
+    padding: 0.6em;
+    outline: none;
+    border: black 1px solid;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+input[type="submit"] {
+    cursor: pointer;
+    margin-top: 1.7em;
+    border: none;
+    width: 100%;
+    color: white;
+    background-color: #6d76d7;
+    transition: 0.2s ease;
+}
+
+input[type="submit"]:hover {
+    background-color: #5361c3;
+    transition: 0.2s ease;
+}
+
+.pointer {
+    color: #1f32aa;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.toggle-paragraph {
+    margin: 0;
+    font-size: 0.75em;
+}
+
+.required::after {
+    color: red;
+    content: "*";
+    font-weight: bold;
+}
+
+.form-error {
+    display: none;
+}
+
+.form-error > p::before {
+    content: "•";
+    margin-right: 3px;
+}
+
+.form-error > p {
+    color: red;
+    font-size: 0.75em;
+    margin: 0 0 0 10px;
+}
+
+.form-error > p::after {
+    content: ".";
+}
