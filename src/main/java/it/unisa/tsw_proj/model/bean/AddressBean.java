@@ -3,6 +3,10 @@ package it.unisa.tsw_proj.model.bean;
 public class AddressBean {
 
     // Metodi di accesso
+    public int getId() {
+        return id;
+    }
+
     public String getStreet() {
         return street;
     }
@@ -23,7 +27,15 @@ public class AddressBean {
         return country;
     }
 
+    public int getIdUser() {
+        return idUser;
+    }
+
     // Metodi modificatori
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public void setStreet(String street) {
         this.street = street;
     }
@@ -44,10 +56,16 @@ public class AddressBean {
         this.country = country;
     }
 
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
+    }
+
     // Attributi
+    private int id;
     private String street;
     private String city;
     private String state;
     private String zip;
     private String country;
+    private int idUser;
 }

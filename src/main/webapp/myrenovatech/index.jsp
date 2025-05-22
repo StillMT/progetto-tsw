@@ -1,20 +1,18 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<% final String pageNameDef = "reservedArea"; %>
 
-<%@ include file="/includes/langSelector.jsp" %>
+<%@ include file="/WEB-INF/includes/lang-selector.jspf" %>
 
 <!DOCTYPE html>
 <html>
-  <% String pageName = pageNameDef; %>
-  <%@ include file="/includes/head.jsp" %>
+  <% final String pageName = "reservedArea"; %>
+  <%@ include file="/WEB-INF/includes/head.jspf" %>
   <body>
-    <%@ include file="/includes/header.jsp" %>
-    <% pageName = pageNameDef; %>
+    <%@ include file="/WEB-INF/includes/header.jspf" %>
 
     <main class="main-cont">
 
     </main>
 
-    <%@ include file="/includes/footer.jsp" %>
+    <%@ include file="/WEB-INF/includes/footer.jspf" %>
   </body>
 </html>

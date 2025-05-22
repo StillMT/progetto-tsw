@@ -1,17 +1,56 @@
+<%@ page import="it.unisa.tsw_proj.utils.SessionSetter" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 
-<%@ include file="/includes/langSelector.jsp" %>
+<%
+    if (SessionSetter.isLogged(request)) {
+        response.sendRedirect("/");
+        return;
+    }
+%>
+
+<%@ include file="/WEB-INF/includes/lang-selector.jspf" %>
 
 <!DOCTYPE html>
 <html>
-    <% String pageName = "login"; %>
-    <%@ include file="/includes/head.jsp" %>
+    <% final String pageName = "login"; %>
+    <%@ include file="/WEB-INF/includes/head.jspf" %>
     <body>
-        <%@ include file="/includes/header.jsp" %>
+        <%@ include file="/WEB-INF/includes/header.jspf" %>
 
         <main class="main-cont">
-/////////// Inserire ?error
-            <div class="login-container" id="login">
+
+            <%
+                String error;
+                String desc = "";
+                if ((error = request.getParameter("error")) != null)
+                    switch (error) {
+                        case "0":
+                            desc = langBundle.getString(pageName + ".error0");
+                            break;
+
+                        case "1":
+                            desc = langBundle.getString(pageName + ".error1");
+                            break;
+
+                        case "2":
+                            desc = langBundle.getString(pageName + ".error2");
+                            break;
+
+                        default:
+                            error = null;
+                    }
+            %>
+
+            <div class="login-container" id="login" <%= error != null ? (error.equals("0") ? "" : "style=\"display: none\"") : "" %>>
+
+                <% if (error != null && error.equals("0")) { %>
+                    <div class="error-box">
+                        <%= desc %>
+                    </div>
+                <%
+                    }
+                %>
+
                 <h2>Login</h2>
                 <form action="${pageContext.request.contextPath}/login" method="post">
                     <div class="div-label"><label for="username">Username</label></div>
@@ -26,7 +65,16 @@
                 </form>
             </div>
 
-            <div class="login-container" id="register" style="display: none">
+            <div class="login-container" id="register" <%= error != null ? (error.equals("1") || error.equals("2") ? "" : "style=\"display: none\"") : "style=\"display: none\"" %>>
+
+                <% if (error != null && (error.equals("1") || error.equals("2"))) { %>
+                    <div class="error-box">
+                        <%= desc %>
+                    </div>
+                <%
+                    }
+                %>
+
                 <h2>Registrati</h2>
                 <form action="${pageContext.request.contextPath}/register" method="post">
                     <div class="div-label"><label for="fullName">Nome e cognome</label><span class="required"></span></div>
@@ -37,7 +85,7 @@
                     </div>
 
                     <div class="div-label"><label for="username">Username</label><span class="required"></span></div>
-                    <input type="text" name="username" id="username" minlength="3" maxlength="10" required />
+                    <input type="text" name="username" id="username" minlength="3" maxlength="16" required />
                     <div class="form-error" id="usernameAlreadyExistError">
                         <p>Questo username non è disponibile</p>
                     </div>
@@ -47,7 +95,7 @@
                     </div>
 
                     <div class="div-label"><label for="password">Password</label><span class="required"></span></div>
-                    <input type="password" name="pass" minlength="8" maxlength="16" id="password" required />
+                    <input type="password" name="pass" minlength="8" maxlength="20" id="password" required />
                     <div class="form-error" id="passwordError">
                         <p>Massimo 20 caratteri, almeno un carattere speciale</p>
                         <p>No spazi</p>
@@ -60,7 +108,10 @@
                     </div>
 
                     <div class="div-label"><label for="email">Email</label><span class="required"></span></div>
-                    <input type="email" name="email" maxlength="50" id="email" required />
+                    <input type="email" name="email" maxlength="254" id="email" required />
+                    <div class="form-error" id="emailAlreadyExistError">
+                        <p>È stato creato già un account con questa email</p>
+                    </div>
                     <div class="form-error" id="emailError">
                         <p>Email non valida</p>
                     </div>
@@ -71,7 +122,7 @@
                         <p>Numero di cellulare non valido</p>
                     </div>
 
-                    <%@ include file="/includes/countrySelector.jsp" %>
+                    <%@ include file="/WEB-INF/includes/country-selector.jspf" %>
 
                     <p class="toggle-paragraph">Sei già registrato? Fai il <span class="pointer" onclick="formToggle()">login!</span></p>
 
@@ -79,13 +130,13 @@
                 </form>
             </div>
 
-            <%@ include file="/includes/popup.jsp" %>
+            <%@ include file="/WEB-INF/includes/popup.jspf" %>
 
         </main>
 
         <script src="js/FormChecker.js"></script>
         <script src="js/FormToggler.js"></script>
 
-        <%@ include file="/includes/footer.jsp" %>
+        <%@ include file="/WEB-INF/includes/footer.jspf" %>
     </body>
 </html>

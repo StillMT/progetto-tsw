@@ -11,4 +11,8 @@ public enum UserRole {
     public String toDb() {
         return name().toLowerCase();
     }
+
+    public boolean isAdmin() {
+        return this == UserRole.ADMIN;
+    }
 }

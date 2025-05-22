@@ -1,0 +1,28 @@
+<%@ page import="java.util.Locale" %>
+<%@ page import="java.util.ResourceBundle" %>
+<%@ page import="it.unisa.tsw_proj.utils.LocaleSupportedChecker" %>
+
+<%
+    final String FALLBACK_LANG = "it";
+
+    HttpSession s = request.getSession();
+    String lang = (String) s.getAttribute("lang");
+    String reqLang = request.getParameter("lang");
+
+    if (lang == null || lang.isBlank() || (reqLang != null && !lang.equals(reqLang))) {
+        lang = reqLang;
+
+        if (lang == null || lang.isBlank()) {
+            String browserLang = request.getLocale().getLanguage();
+            lang = LocaleSupportedChecker.checkLanguage(browserLang) ? browserLang : FALLBACK_LANG;
+        }
+
+        if (!LocaleSupportedChecker.checkLanguage(lang)) {
+            lang = FALLBACK_LANG;
+        }
+
+        s.setAttribute("lang", lang);
+    }
+
+    ResourceBundle langBundle = ResourceBundle.getBundle("lang.messages", Locale.forLanguageTag(lang));
+%>

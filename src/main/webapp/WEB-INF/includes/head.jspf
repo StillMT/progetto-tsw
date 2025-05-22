@@ -1,0 +1,13 @@
+<head>
+    <title><%= langBundle.getString(pageName + ".title") %> - ReNovaTech</title>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="icon" href="${pageContext.request.contextPath}/GeneralData/imgs/favicon.ico" type="image/x-icon" />
+
+    <link rel="stylesheet" href="styles/main.css" type="text/css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/GeneralData/styles/main.css" type="text/css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/GeneralData/styles/header.css" type="text/css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/GeneralData/styles/footer.css" type="text/css" />
+</head>

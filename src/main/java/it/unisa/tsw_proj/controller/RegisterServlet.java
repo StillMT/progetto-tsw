@@ -1,58 +1,84 @@
 package it.unisa.tsw_proj.controller;
 
 import java.io.IOException;
-import java.util.regex.Pattern;
 
+import it.unisa.tsw_proj.model.bean.UserBean;
+import it.unisa.tsw_proj.model.dao.UserDAO;
+import it.unisa.tsw_proj.utils.FieldValidator;
+import it.unisa.tsw_proj.utils.SessionSetter;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.*;
 import jakarta.servlet.http.*;
+import org.mindrot.jbcrypt.BCrypt;
 
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+        if (!SessionSetter.isLogged(request))
+            response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+        else
+            response.sendRedirect("/");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession s = request.getSession();
+
+        if (SessionSetter.isLogged(s)) {
+            response.sendRedirect("/");
+            return;
+        }
+
         String fullName = request.getParameter("fullName");
         String username = request.getParameter("username");
         String password = request.getParameter("pass");
         String repPassword = request.getParameter("rep-pass");
         String email = request.getParameter("email");
-        String phone = request.getParameter("phone");
+        String phone = request.getParameter("cell");
         String country = request.getParameter("country");
 
-        if (!checkParams(fullName, username, password, repPassword, email, phone, country))
+        if (!checkParams(fullName, username, password, repPassword, email, phone, country)) {
             response.sendRedirect("/myrenovatech/login/?error=1");
+            return;
+        }
+
+        UserBean user = new UserBean(fullName, username, BCrypt.hashpw(password, BCrypt.gensalt()), email, phone, country);
+        int userId = UserDAO.doRegisterUser(user);
+        if (userId > 0) {
+            user.setId(userId);
+            SessionSetter.setSessionToLogin(request.getSession(), user);
+            response.sendRedirect("/");
+        }
+        else
+            response.sendRedirect("/myrenovatech/login/?error=2");
     }
 
     private boolean checkParams(String fullName, String username, String password, String repPassword, String email, String cellphone, String country) {
         // Validate repeat password field
-        if (!repPassword.equals(password))
+        if (!FieldValidator.repPswValidate(password, repPassword))
             return false;
 
         // Validate full name
-        if (!Pattern.compile("^(?=.{1,50}$)\\S+(?:\\s+\\S+)+$").matcher(fullName).matches())
+        if (!FieldValidator.fullNameValidate(fullName))
             return false;
 
         // Validate username
-        if (!Pattern.compile("^[a-zA-Z0-9_-]{3,20}$").matcher(username).matches())
+        if (!FieldValidator.usernameValidate(username) || !UserDAO.doCheckUsernameAvailability(username))
             return false;
 
         // Validate password
-        if (!Pattern.compile("^(?=.*[!@#$%^&*(),.?\":{}|<>_])[a-zA-Z0-9!@#$%^&*(),.?\":{}|<>_]{8,16}$").matcher(password).matches())
+        if (!FieldValidator.passwordValidate(password))
             return false;
 
         // Validate email
-        if (!Pattern.compile("^[a-zA-Z0-9](?!.*?[.]{2})[a-zA-Z0-9._%+-]{0,63}@[a-zA-Z0-9](?!.*--)[a-zA-Z0-9.-]{0,253}\\.[a-zA-Z]{2,}$").matcher(email).matches())
+        if (!FieldValidator.emailValidate(email) || !UserDAO.doCheckEmailAvailability(email))
             return false;
 
         // Validate cellphone
-        if (!Pattern.compile("^\\+?[0-9]{9,15}$").matcher(cellphone).matches())
+        if (!FieldValidator.phoneValidate(cellphone))
             return false;
 
         // Validate country
-        return Pattern.compile("^[a-z]{2}$").matcher(country).matches();
+        return FieldValidator.countryValidate(country);
     }
 }

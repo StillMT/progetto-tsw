@@ -1,15 +1,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<% final String pageNameDef = "contactUs"; %>
 
-<%@ include file="/includes/langSelector.jsp" %>
+<%@ include file="/WEB-INF/includes/lang-selector.jspf" %>
 
 <!DOCTYPE html>
 <html>
-<% String pageName = pageNameDef; %>
-<%@ include file="/includes/head.jsp" %>
+<% final String pageName = "contactUs"; %>
+<%@ include file="/WEB-INF/includes/head.jspf" %>
 <body>
-<%@ include file="/includes/header.jsp" %>
-<% pageName = pageNameDef; %>
+<%@ include file="/WEB-INF/includes/header.jspf" %>
 
 <main class="main-cont">
     <div class="contact-container">
@@ -50,7 +48,7 @@
                         <div class="form-error" id="nameError" style="display: none;">Inserisci nome e cognome validi.</div>
                     </div>
                     <div>
-                        <%@ include file="/includes/countrySelector.jsp" %>
+                        <%@ include file="/WEB-INF/includes/country-selector.jspf" %>
                         <div class="form-error" id="countryError" style="display: none;">Seleziona un paese.</div>
                     </div>
                 </div>
@@ -78,7 +76,7 @@
     </div>
 </main>
 
-<%@ include file="/includes/footer.jsp" %>
+<%@ include file="/WEB-INF/includes/footer.jspf" %>
 <script src="js/contactFormValidator.js"></script>
 </body>
 </html>

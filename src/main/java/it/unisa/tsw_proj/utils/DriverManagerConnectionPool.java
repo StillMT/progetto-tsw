@@ -6,12 +6,17 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class DriverManagerConnectionPool {
+public final class DriverManagerConnectionPool {
 
-    private static final String DB_URL = "jdbc:mysql://192.168.1.71:3306/renovatech_db";
+    // Costruttore privato per evitare di istanziare
+    private DriverManagerConnectionPool() {}
+
+    // Attributi
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/renovatech_db";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "Ciao";
+    private static final String DB_PASSWORD = "";
     private static final long MAX_IDLE_TIME = 120_000; // 2 minuti
+    private static final int CHECK_PERIOD = 30;
     private static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     private static class PooledConnection {
@@ -49,7 +54,7 @@ public class DriverManagerConnectionPool {
                     }
                 }
             }
-        }, 1, 30, TimeUnit.SECONDS); // ogni 30 secondi
+        }, 1, CHECK_PERIOD, TimeUnit.SECONDS);
     }
 
     private static synchronized Connection createDBConnection() throws SQLException {

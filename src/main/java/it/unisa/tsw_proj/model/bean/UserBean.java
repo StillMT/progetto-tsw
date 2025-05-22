@@ -4,6 +4,25 @@ import it.unisa.tsw_proj.model.UserRole;
 
 public class UserBean {
 
+    // Costruttori
+    public UserBean() {}
+
+    public UserBean(String fullName, String username, String password, String email, String phone, String nationality) {    // Register related
+        this.fullName = fullName;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.phone = phone;
+        this.nationality = nationality;
+        this.role = UserRole.USER;
+    }
+
+    public UserBean(int id, String fullName, String username, String password, String email, String phone, String nationality, UserRole role) {     // Login related
+        this(fullName, username, password, email, phone, nationality);
+        setId(id);
+        setRole(role);
+    }
+
     // Metodi di accesso
     public int getId() {
         return id;

@@ -4,6 +4,10 @@ import java.util.ArrayList;
 
 public class CartBean {
 
+    public CartBean() {
+        products = new ArrayList<>();
+    }
+
     // Metodi di accesso
     public int getIdUser() {
         return id_user;
@@ -53,5 +57,5 @@ public class CartBean {
 
     // Attributi
     private int id_user;
-    final private ArrayList<CartedProduct> products = new ArrayList<>();
+    final private ArrayList<CartedProduct> products;
 }

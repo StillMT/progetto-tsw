@@ -17,6 +17,7 @@ document.getElementById("register").addEventListener("submit", function (ev) {
         if (el.style.display === "block") {
             ev.preventDefault();
             formOk = false;
+            showPopup("Attenzione", "Alcuni campi sono invalidi! Controlla e riprova.");
             break;
         }
 
@@ -27,7 +28,7 @@ document.getElementById("register").addEventListener("submit", function (ev) {
     }
 });
 
-document.querySelectorAll("input").forEach(input => {
+document.querySelectorAll("#register input").forEach(input => {
     input.addEventListener('input', function () {
         switch (input.name) {
             case 'fullName': validateName(input); break;
@@ -49,7 +50,7 @@ function validateName(input) {
 function validateUsername(input) {
     const error = document.getElementById("usernameError");
     const availabilityError = document.getElementById('usernameAlreadyExistError');
-    const regex = /^[a-zA-Z0-9_-]{3,20}$/;
+    const regex = /^[a-zA-Z0-9_-]{3,16}$/;
 
     let reg = regex.test(input.value.trim());
     error.style.display = reg ? "none" : "block";
@@ -75,9 +76,17 @@ function validateRepPass(input) {
 
 function validateEmail(input) {
     const error = document.getElementById("emailError");
-    const regex = /^[a-zA-Z0-9](?!.*?[.]{2})[a-zA-Z0-9._%+-]{0,63}@[a-zA-Z0-9](?!.*--)[a-zA-Z0-9.-]{0,253}\.[a-zA-Z]{2,}$/;
+    const availabilityError = document.getElementById('emailAlreadyExistError');
+    const regex = /^(?=.{1,254}$)[a-zA-Z0-9](?!.*?[.]{2})[a-zA-Z0-9._%+-]{0,63}@[a-zA-Z0-9](?!.*--)[a-zA-Z0-9.-]{0,253}\.[a-zA-Z]{2,}$/;
 
-    error.style.display = regex.test(input.value) ? "none" : "block";
+    let reg = regex.test(input.value.trim());
+    error.style.display = reg ? "none" : "block";
+    if (reg)
+        fetch(`/check-email?email=${encodeURIComponent(input.value)}`)
+            .then(res => res.text())
+            .then(res => {availabilityError.style.display = (res === "true" ? "none" : "block")});
+    else
+        availabilityError.style.display = "none";
 }
 
 function validateCell(input) {
