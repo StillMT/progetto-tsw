@@ -1,12 +1,9 @@
 package it.unisa.tsw_proj.utils;
 
-import it.unisa.tsw_proj.model.bean.CartBean;
 import it.unisa.tsw_proj.model.bean.UserBean;
 import it.unisa.tsw_proj.model.dao.CartDAO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-
-import java.net.http.HttpRequest;
 
 public final class SessionSetter {
 
@@ -20,7 +17,7 @@ public final class SessionSetter {
     }
 
     public static boolean isLogged(HttpServletRequest req) {
-        return req.getSession().getAttribute("user") != null;
+        return isLogged(req.getSession());
     }
 
     public static boolean isLogged(HttpSession s) {

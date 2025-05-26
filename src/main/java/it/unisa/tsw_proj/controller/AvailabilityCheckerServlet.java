@@ -1,35 +1,60 @@
 package it.unisa.tsw_proj.controller;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import it.unisa.tsw_proj.model.dao.UserDAO;
 import jakarta.servlet.*;
-import jakarta.servlet.annotation.*;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
-@WebServlet(urlPatterns = {"/check-username", "/check-email"})
+@WebServlet(urlPatterns = {"/check-username", "/check-email", "/check-phone"})
 public class AvailabilityCheckerServlet extends HttpServlet {
 
+    private static final Set<String> BAD_WORDS = new HashSet<>(Arrays.asList(
+            "frocio", "negro", "gay"
+    ));
+
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        String servletPath = request.getServletPath();
         boolean result = false;
 
-        if (request.getServletPath().equals("/check-username")) {
-            if (!containsBadWord(request.getParameter("username")))
-                result = UserDAO.doCheckUsernameAvailability(request.getParameter("username"));
-        }
-        else if (request.getServletPath().equals("/check-email"))
-            result = UserDAO.doCheckEmailAvailability(request.getParameter("email"));
+        switch (servletPath) {
+            case "/check-username":
+                String username = request.getParameter("username");
+                if (username != null && !containsBadWord(username))
+                    result = UserDAO.doCheckUsernameAvailability(username);
+                break;
 
-        response.setContentType("text/plain");
-        response.getWriter().write(String.valueOf(result));
+            case "/check-email":
+                String email = request.getParameter("email");
+                if (email != null)
+                    result = UserDAO.doCheckEmailAvailability(email);
+                break;
+
+            case "/check-phone":
+                String phone = request.getParameter("phone");
+                if (phone != null)
+                    result = UserDAO.doCheckPhoneAvailability(phone);
+                break;
+        }
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write("{result: " + result + "}");
     }
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);
     }
 
-    private boolean containsBadWord(String username) {
-        String normalized = username.toLowerCase()
+    private boolean containsBadWord(String input) {
+        String normalized = input.toLowerCase()
                 .replace("3", "e")
                 .replace("0", "o")
                 .replace("1", "i")
@@ -37,15 +62,9 @@ public class AvailabilityCheckerServlet extends HttpServlet {
                 .replace("$", "s")
                 .replace("@", "a");
 
-        String[] badWords = {
-                "frocio", "negro", "gay"        // Da aggiungere altro in un eventuale caso
-        };
-
-        for (String word : badWords)
-            if (normalized.contains(word))
-                return true;
-
+        for (String word : BAD_WORDS) {
+            if (normalized.contains(word)) return true;
+        }
         return false;
     }
-
 }

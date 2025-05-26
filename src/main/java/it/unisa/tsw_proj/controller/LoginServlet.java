@@ -14,10 +14,7 @@ import jakarta.servlet.http.*;
 public class LoginServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (!SessionSetter.isLogged(request))
-            response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-        else
-            response.sendRedirect("/");
+        response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

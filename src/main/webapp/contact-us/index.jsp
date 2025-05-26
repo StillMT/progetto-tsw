@@ -49,7 +49,6 @@
                     </div>
                     <div>
                         <%@ include file="/WEB-INF/includes/country-selector.jspf" %>
-                        <div class="form-error" id="countryError" style="display: none;">Seleziona un paese.</div>
                     </div>
                 </div>
                 <div class="p-info-col">

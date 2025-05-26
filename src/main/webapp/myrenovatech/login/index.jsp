@@ -1,12 +1,4 @@
-<%@ page import="it.unisa.tsw_proj.utils.SessionSetter" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
-
-<%
-    if (SessionSetter.isLogged(request)) {
-        response.sendRedirect("/");
-        return;
-    }
-%>
 
 <%@ include file="/WEB-INF/includes/lang-selector.jspf" %>
 
@@ -24,16 +16,20 @@
                 String desc = "";
                 if ((error = request.getParameter("error")) != null)
                     switch (error) {
-                        case "0":
+                        case "wrong_data":
                             desc = langBundle.getString(pageName + ".error0");
                             break;
 
-                        case "1":
+                        case "invalid_data":
                             desc = langBundle.getString(pageName + ".error1");
                             break;
 
-                        case "2":
+                        case "contact_us":
                             desc = langBundle.getString(pageName + ".error2");
+                            break;
+
+                        case "auth":
+                            desc = langBundle.getString(pageName + ".error3");
                             break;
 
                         default:
@@ -41,9 +37,9 @@
                     }
             %>
 
-            <div class="login-container" id="login" <%= error != null ? (error.equals("0") ? "" : "style=\"display: none\"") : "" %>>
+            <div class="login-container" id="login" <%= error != null ? (error.equals("wrong_data") || error.equals("auth") ? "" : "style=\"display: none\"") : "" %>>
 
-                <% if (error != null && error.equals("0")) { %>
+                <% if (error != null && (error.equals("wrong_data") || error.equals("auth"))) { %>
                     <div class="error-box">
                         <%= desc %>
                     </div>
@@ -59,15 +55,15 @@
                     <div class="div-label"><label for="pass">Password</label></div>
                     <input type="password" name="pass" id="pass" required />
 
-                    <p class="toggle-paragraph">Non sei ancora registrato? <span class="pointer" onclick="formToggle()">Registrati!</span></p>
+                    <p class="toggle-paragraph"><%= langBundle.getString(pageName + ".notRegistered") %><span class="pointer" onclick="formToggle()"><%= langBundle.getString(pageName + ".register") %></span></p>
 
-                    <input type="submit" value="Entra" />
+                    <input type="submit" value="<%= langBundle.getString(pageName + ".loginBtn") %>" />
                 </form>
             </div>
 
-            <div class="login-container" id="register" <%= error != null ? (error.equals("1") || error.equals("2") ? "" : "style=\"display: none\"") : "style=\"display: none\"" %>>
+            <div class="login-container" id="register" <%= error != null ? (error.equals("invalid_data") || error.equals("contact_us") ? "" : "style=\"display: none\"") : "style=\"display: none\"" %>>
 
-                <% if (error != null && (error.equals("1") || error.equals("2"))) { %>
+                <% if (error != null && (error.equals("invalid_data") || error.equals("contact_us"))) { %>
                     <div class="error-box">
                         <%= desc %>
                     </div>
@@ -75,58 +71,61 @@
                     }
                 %>
 
-                <h2>Registrati</h2>
+                <h2><%= langBundle.getString(pageName + ".register") %></h2>
                 <form action="${pageContext.request.contextPath}/register" method="post">
-                    <div class="div-label"><label for="fullName">Nome e cognome</label><span class="required"></span></div>
+                    <div class="div-label"><label for="fullName"><%= langBundle.getString(pageName + ".fullName") %></label><span class="required"></span></div>
                     <input type="text" name="fullName" maxlength="50" id="fullName" required />
                     <div class="form-error" id="fullNameError">
-                        <p>Immettere sia nome che cognome</p>
-                        <p>Massimo 50 caratteri</p>
+                        <p><%= langBundle.getString(pageName + ".enterBothFirstAndLastName") %></p>
+                        <p><%= langBundle.getString(pageName + ".maximum50Characters") %></p>
                     </div>
 
                     <div class="div-label"><label for="username">Username</label><span class="required"></span></div>
                     <input type="text" name="username" id="username" minlength="3" maxlength="16" required />
                     <div class="form-error" id="usernameAlreadyExistError">
-                        <p>Questo username non è disponibile</p>
+                        <p><%= langBundle.getString(pageName + ".thisUsernameIsNotAvailable") %></p>
                     </div>
                     <div class="form-error" id="usernameError">
-                        <p>Lo username deve essere lungo dai 3 ai 10 caratteri</p>
-                        <p>Consentiti solo lettere, numeri, trattini e trattini bassi</p>
+                        <p><%= langBundle.getString(pageName + ".theUsernameMustBeBetween3And10CharactersLong") %></p>
+                        <p><%= langBundle.getString(pageName + ".onlyLettersNumbersHyphensAndUnderscoresAllowed") %></p>
                     </div>
 
                     <div class="div-label"><label for="password">Password</label><span class="required"></span></div>
                     <input type="password" name="pass" minlength="8" maxlength="20" id="password" required />
                     <div class="form-error" id="passwordError">
-                        <p>Massimo 20 caratteri, almeno un carattere speciale</p>
-                        <p>No spazi</p>
+                        <p><%= langBundle.getString(pageName + ".maximum20CharactersAtLeastOneSpecialCharacter") %></p>
+                        <p><%= langBundle.getString(pageName + ".noSpaces") %></p>
                     </div>
 
-                    <div class="div-label"><label for="rep-password">Ripeti Password</label><span class="required"></span></div>
+                    <div class="div-label"><label for="rep-password"><%= langBundle.getString(pageName + ".repeatPassword") %></label><span class="required"></span></div>
                     <input type="password" name="rep-pass" id="rep-password" required />
                     <div class="form-error" id="repPasswordError">
-                        <p>Le due password devono coincidere</p>
+                        <p><%= langBundle.getString(pageName + ".theTwoPasswordsMustMatch") %></p>
                     </div>
 
                     <div class="div-label"><label for="email">Email</label><span class="required"></span></div>
                     <input type="email" name="email" maxlength="254" id="email" required />
                     <div class="form-error" id="emailAlreadyExistError">
-                        <p>È stato creato già un account con questa email</p>
+                        <p><%= langBundle.getString(pageName + ".anAccountHasAlreadyBeenCreatedWithThisEmailAddress") %></p>
                     </div>
                     <div class="form-error" id="emailError">
-                        <p>Email non valida</p>
+                        <p><%= langBundle.getString(pageName + ".invalidEmail") %></p>
                     </div>
 
-                    <div class="div-label"><label for="cell">Cellulare</label><span class="required"></span></div>
-                    <input type="tel" name="cell" id="cell" maxlength="11" required />
+                    <div class="div-label"><label for="cell"><%= langBundle.getString(pageName + ".mobilePhone") %></label><span class="required"></span></div>
+                    <input type="tel" name="cell" id="cell" maxlength="15" required />
+                    <div class="form-error" id="cellAlreadyExistError">
+                        <p><%= langBundle.getString(pageName + ".mobileNumberAlreadyRegistered") %></p>
+                    </div>
                     <div class="form-error" id="cellError">
-                        <p>Numero di cellulare non valido</p>
+                        <p><%= langBundle.getString(pageName + ".invalidMobileNumber") %></p>
                     </div>
 
                     <%@ include file="/WEB-INF/includes/country-selector.jspf" %>
 
-                    <p class="toggle-paragraph">Sei già registrato? Fai il <span class="pointer" onclick="formToggle()">login!</span></p>
+                    <p class="toggle-paragraph"><%= langBundle.getString(pageName + ".AreYouAlreadyRegisteredDoYouWantTo") %><span class="pointer" onclick="formToggle()"> <%= langBundle.getString(pageName + ".login") %></span></p>
 
-                    <input type="submit" value="Registrati" />
+                    <input type="submit" value="<%= langBundle.getString(pageName + ".registerBtn") %>" />
                 </form>
             </div>
 

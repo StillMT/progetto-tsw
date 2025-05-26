@@ -13,13 +13,14 @@ if (countrySelect) {
 document.getElementById("register").addEventListener("submit", function (ev) {
     let formOk = true;
 
-    for (const el of document.querySelectorAll(".form-error"))
+    for (const el of document.querySelectorAll(".form-error")) {
         if (el.style.display === "block") {
             ev.preventDefault();
             formOk = false;
             showPopup("Attenzione", "Alcuni campi sono invalidi! Controlla e riprova.");
             break;
         }
+    }
 
     if (!countrySelected && formOk) {
         showPopup("Attenzione", "Sei sicuro di aver selezionato il paese giusto?");
@@ -41,56 +42,71 @@ document.querySelectorAll("#register input").forEach(input => {
     });
 });
 
+function toggleVisibility(element, show) {
+    element.style.display = show ? "block" : "none";
+}
+
 function validateName(input) {
     const error = document.getElementById("fullNameError");
     const regex = /^(?=.{1,50}$)\S+(?:\s+\S+)+$/;
-    error.style.display = regex.test(input.value) ? "none" : "block";
-}
-
-function validateUsername(input) {
-    const error = document.getElementById("usernameError");
-    const availabilityError = document.getElementById('usernameAlreadyExistError');
-    const regex = /^[a-zA-Z0-9_-]{3,16}$/;
-
-    let reg = regex.test(input.value.trim());
-    error.style.display = reg ? "none" : "block";
-    if (reg)
-        fetch(`/check-username?username=${encodeURIComponent(input.value)}`)
-            .then(res => res.text())
-            .then(res => {availabilityError.style.display = (res === "true" ? "none" : "block")});
-    else
-        availabilityError.style.display = "none";
+    toggleVisibility(error, !regex.test(input.value.trim()));
 }
 
 function validatePass(input) {
     const error = document.getElementById("passwordError");
     const regex = /^(?=.*[!@#$%^&*(),.?":{}|<>_])[a-zA-Z0-9!@#$%^&*(),.?":{}|<>_]{8,16}$/;
-    error.style.display = regex.test(input.value.trim()) ? "none" : "block";
+    toggleVisibility(error, !regex.test(input.value.trim()));
 }
 
 function validateRepPass(input) {
     const error = document.getElementById("repPasswordError");
     const original = document.getElementById("password");
-    error.style.display = (input.value === original.value ? "none" : "block");
+    toggleVisibility(error, input.value !== original.value);
 }
 
-function validateEmail(input) {
+async function validateUsername(input) {
+    const error = document.getElementById("usernameError");
+    const availabilityError = document.getElementById("usernameAlreadyExistError");
+    const regex = /^[a-zA-Z0-9_-]{3,16}$/;
+
+    const value = input.value.trim();
+    const valid = regex.test(value);
+
+    toggleVisibility(error, !valid);
+    toggleVisibility(availabilityError, valid && !(await checkAJAXField("/check-username?username=", value)));
+}
+
+async function validateEmail(input) {
     const error = document.getElementById("emailError");
-    const availabilityError = document.getElementById('emailAlreadyExistError');
+    const availabilityError = document.getElementById("emailAlreadyExistError");
     const regex = /^(?=.{1,254}$)[a-zA-Z0-9](?!.*?[.]{2})[a-zA-Z0-9._%+-]{0,63}@[a-zA-Z0-9](?!.*--)[a-zA-Z0-9.-]{0,253}\.[a-zA-Z]{2,}$/;
 
-    let reg = regex.test(input.value.trim());
-    error.style.display = reg ? "none" : "block";
-    if (reg)
-        fetch(`/check-email?email=${encodeURIComponent(input.value)}`)
-            .then(res => res.text())
-            .then(res => {availabilityError.style.display = (res === "true" ? "none" : "block")});
-    else
-        availabilityError.style.display = "none";
+    const value = input.value.trim();
+    const valid = regex.test(value);
+
+    toggleVisibility(error, !valid);
+    toggleVisibility(availabilityError, valid && !(await checkAJAXField("/check-email?email=", value)));
 }
 
-function validateCell(input) {
+async function validateCell(input) {
     const error = document.getElementById("cellError");
+    const availabilityError = document.getElementById("cellAlreadyExistError");
     const regex = /^\+?[0-9]{9,15}$/;
-    error.style.display = regex.test(input.value) ? "none" : "block";
+
+    const value = input.value.trim();
+    const valid = regex.test(value);
+
+    toggleVisibility(error, !valid);
+    toggleVisibility(availabilityError, valid && !(await checkAJAXField("/check-phone?phone=", value)));
+}
+
+async function checkAJAXField(url, str) {
+    try {
+        const res = await fetch(`${url}${encodeURIComponent(str)}`);
+        const data = await res.json();
+        return data.available;
+    } catch (err) {
+        console.error("AJAX error:", err);
+        return false;
+    }
 }

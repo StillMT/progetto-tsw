@@ -7,7 +7,7 @@
 }
 
 .error-box {
-    background-color: red;
+    background-color: #f56161;
     color: white;
     padding: 1em;
     border-radius: 15px;
@@ -66,6 +66,11 @@ input[type="submit"]:hover {
     color: #1f32aa;
     text-decoration: underline;
     cursor: pointer;
+}
+
+.pointer::before {
+    content: " ";
+    text-decoration: none;
 }
 
 .toggle-paragraph {

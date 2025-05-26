@@ -105,3 +105,11 @@
 .dropdown-menu-wrapper:hover .dropdown-menu {
     display: block;
 }
+
+#username {
+    font-weight: 500;
+}
+
+.admin-user {
+    color: red;
+}

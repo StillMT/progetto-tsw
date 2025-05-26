@@ -1,18 +1,18 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 
-<%@ include file="/includes/lang-selector.jspf" %>
+<%@ include file="/WEB-INF/includes/lang-selector.jspf" %>
 
 <!DOCTYPE html>
 <html>
   <% final String pageName = "DA MODIFICARE"; %>
-  <%@ include file="/includes/head.jspf" %>
+  <%@ include file="/WEB-INF/includes/head.jspf" %>
   <body>
-    <%@ include file="/includes/header.jspf" %>
+    <%@ include file="/WEB-INF/includes/header.jspf" %>
 
     <main class="main-cont">
 
     </main>
 
-    <%@ include file="/includes/footer.jspf" %>
+    <%@ include file="/WEB-INF/includes/footer.jspf" %>
   </body>
 </html>

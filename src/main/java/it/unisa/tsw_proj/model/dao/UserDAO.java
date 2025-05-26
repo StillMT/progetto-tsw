@@ -9,17 +9,25 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UserDAO {
+
+    // Attributi
+    private static final Logger logger = Logger.getLogger(UserDAO.class.getName());
 
     // Metodi pubblici
     public static int doRegisterUser(UserBean user) {
         final String sql = "INSERT INTO user VALUES (NULL, ?, ?, ?, ?, ?, ?, ?);";
         int result = 0;
 
+        Connection con = null;
+        PreparedStatement ps = null;
+
         try {
-            Connection con = DriverManagerConnectionPool.getConnection();
-            PreparedStatement ps = con.prepareStatement(sql);
+            con = DriverManagerConnectionPool.getConnection();
+            ps = con.prepareStatement(sql);
 
             ps.setString(1, user.getFullName());
             ps.setString(2, user.getUsername());
@@ -31,11 +39,10 @@ public class UserDAO {
 
             if (ps.executeUpdate() == 1)
                 result = doFindIdByUser(user);
-
-            ps.close();
-            DriverManagerConnectionPool.releaseConnection(con);
         } catch (SQLException e) {
-            e.printStackTrace();
+            DriverManagerConnectionPool.logSqlError(e, logger);
+        } finally {
+            DriverManagerConnectionPool.closeSqlParams(con, ps);
         }
 
         return result;
@@ -45,12 +52,16 @@ public class UserDAO {
         final String sql = "SELECT * FROM user WHERE username = ?";
         UserBean user = null;
 
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
         try {
-            Connection con = DriverManagerConnectionPool.getConnection();
-            PreparedStatement ps = con.prepareStatement(sql);
+            con = DriverManagerConnectionPool.getConnection();
+            ps = con.prepareStatement(sql);
 
             ps.setString(1, username);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
 
             if (rs.next()) {
                 String pwd = rs.getString("password_hash");
@@ -60,12 +71,10 @@ public class UserDAO {
                             pwd, rs.getString("email"), rs.getString("cellphone"),
                             rs.getString("nationality"), UserRole.fromDb(rs.getString("role")));
             }
-
-            rs.close();
-            ps.close();
-            DriverManagerConnectionPool.releaseConnection(con);
         } catch (SQLException e) {
-            e.printStackTrace();
+            DriverManagerConnectionPool.logSqlError(e, logger);
+        } finally {
+            DriverManagerConnectionPool.closeSqlParams(con, ps, rs);
         }
 
         return user;
@@ -83,48 +92,57 @@ public class UserDAO {
         return checkAvailability(email, sql);
     }
 
+    public static boolean doCheckPhoneAvailability(String phone) {
+        final String sql = "SELECT cellphone FROM user WHERE cellphone = ?";
+
+        return checkAvailability(phone, sql);
+    }
+
     // Metodi privati
     private static boolean checkAvailability(String email, String sql) {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        boolean res = false;
+
         try {
-            Connection con = DriverManagerConnectionPool.getConnection();
-            PreparedStatement ps = con.prepareStatement(sql);
+            con = DriverManagerConnectionPool.getConnection();
+            ps = con.prepareStatement(sql);
 
             ps.setString(1, email);
-            ResultSet rs = ps.executeQuery();
-
-            boolean res = !rs.next();
-            rs.close();
-            ps.close();
-            DriverManagerConnectionPool.releaseConnection(con);
-
-            return res;
+            rs = ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            DriverManagerConnectionPool.logSqlError(e, logger);
+        } finally {
+            DriverManagerConnectionPool.closeSqlParams(con, ps, rs);
         }
 
-        return false;
+        return res;
     }
 
     private static int doFindIdByUser(UserBean user) {
         final String sql = "SELECT id FROM user WHERE username = ? AND email = ?";
         int id = -1;
 
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
         try {
-            Connection con = DriverManagerConnectionPool.getConnection();
-            PreparedStatement ps = con.prepareStatement(sql);
+            con = DriverManagerConnectionPool.getConnection();
+            ps = con.prepareStatement(sql);
 
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getEmail());
 
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             if (rs.next())
                 id = rs.getInt("id");
-
-            rs.close();
-            ps.close();
-            DriverManagerConnectionPool.releaseConnection(con);
         } catch (SQLException e) {
-            e.printStackTrace();
+            DriverManagerConnectionPool.logSqlError(e, logger);
+        } finally {
+            DriverManagerConnectionPool.closeSqlParams(con, ps, rs);
         }
 
         return id;

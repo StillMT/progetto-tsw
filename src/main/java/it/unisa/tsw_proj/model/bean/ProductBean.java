@@ -3,6 +3,10 @@ package it.unisa.tsw_proj.model.bean;
 public class ProductBean {
 
     // Metodi di accesso
+    public String getColor() {return color; }
+
+    public int getStorage() {return storage; }
+
     public int getId() {
         return id;
     }
@@ -28,6 +32,10 @@ public class ProductBean {
     }
 
     // Metodi modificatori
+    public void setStorage(int storage) {this.storage = storage; }
+
+    public void setColor(String color) {this.color = color; }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -59,4 +67,6 @@ public class ProductBean {
     private double price;
     private int stock;
     private int id_category;
+    private String color;
+    private int storage;
 }

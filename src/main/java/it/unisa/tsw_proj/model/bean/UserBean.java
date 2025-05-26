@@ -56,6 +56,10 @@ public class UserBean {
         return role;
     }
 
+    public boolean isAdmin() {
+        return role.isAdmin();
+    }
+
     // Metodi modificatori
     public void setId(int id) {
         this.id = id;
