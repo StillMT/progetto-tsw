@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 public class CartDAO {
 
@@ -15,22 +16,27 @@ public class CartDAO {
         final String sql = "SELECT cart.id_product, cart.qty FROM cart WHERE cart.id_user = ?";
         CartBean cart = new CartBean();
 
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
         try {
-            Connection con = DriverManagerConnectionPool.getConnection();
-            PreparedStatement ps = con.prepareStatement(sql);
+            con = DriverManagerConnectionPool.getConnection();
+            ps = con.prepareStatement(sql);
 
             ps.setInt(1, us.getId());
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             while (rs.next())
                 cart.addProduct(rs.getInt("id_product"), rs.getInt("qty"));
-
-            rs.close();
-            ps.close();
-            DriverManagerConnectionPool.releaseConnection(con);
         } catch (SQLException e) {
-            e.printStackTrace();
+            DriverManagerConnectionPool.logSqlError(e, logger);
+        } finally {
+            DriverManagerConnectionPool.closeSqlParams(con, ps, rs);
         }
 
         return cart;
     }
+
+    // Attributi
+    private static final Logger logger = Logger.getLogger(CartDAO.class.getName());
 }

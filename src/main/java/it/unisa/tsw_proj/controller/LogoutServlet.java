@@ -10,7 +10,10 @@ import jakarta.servlet.http.*;
 public class LogoutServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getSession().removeAttribute("user");
+        HttpSession s = request.getSession();
+        s.removeAttribute("user");
+        s.removeAttribute("cart");
+
         response.sendRedirect("/");
     }
 

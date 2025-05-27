@@ -99,7 +99,7 @@ public class UserDAO {
     }
 
     // Metodi privati
-    private static boolean checkAvailability(String email, String sql) {
+    private static boolean checkAvailability(String str, String sql) {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -110,15 +110,17 @@ public class UserDAO {
             con = DriverManagerConnectionPool.getConnection();
             ps = con.prepareStatement(sql);
 
-            ps.setString(1, email);
+            ps.setString(1, str);
             rs = ps.executeQuery();
+
+            res = rs.next();
         } catch (SQLException e) {
             DriverManagerConnectionPool.logSqlError(e, logger);
         } finally {
             DriverManagerConnectionPool.closeSqlParams(con, ps, rs);
         }
 
-        return res;
+        return !res;
     }
 
     private static int doFindIdByUser(UserBean user) {

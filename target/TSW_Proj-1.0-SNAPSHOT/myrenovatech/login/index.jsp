@@ -55,7 +55,7 @@
                     <div class="div-label"><label for="pass">Password</label></div>
                     <input type="password" name="pass" id="pass" required />
 
-                    <p class="toggle-paragraph"><%= langBundle.getString(pageName + ".notRegistered") %><span class="pointer" onclick="formToggle()"><%= langBundle.getString(pageName + ".register") %></span></p>
+                    <p class="toggle-paragraph"><%= langBundle.getString(pageName + ".notRegistered") %> <span class="pointer" onclick="formToggle()"><%= langBundle.getString(pageName + ".register") %></span></p>
 
                     <input type="submit" value="<%= langBundle.getString(pageName + ".loginBtn") %>" />
                 </form>
@@ -123,7 +123,7 @@
 
                     <%@ include file="/WEB-INF/includes/country-selector.jspf" %>
 
-                    <p class="toggle-paragraph"><%= langBundle.getString(pageName + ".AreYouAlreadyRegisteredDoYouWantTo") %><span class="pointer" onclick="formToggle()"><%= langBundle.getString(pageName + ".login") %></span></p>
+                    <p class="toggle-paragraph"><%= langBundle.getString(pageName + ".AreYouAlreadyRegisteredDoYouWantTo") %> <span class="pointer" onclick="formToggle()"><%= langBundle.getString(pageName + ".login") %></span></p>
 
                     <input type="submit" value="<%= langBundle.getString(pageName + ".registerBtn") %>" />
                 </form>

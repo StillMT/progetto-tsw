@@ -1,5 +1,8 @@
 package it.unisa.tsw_proj.utils;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public final class FieldValidator {
@@ -36,6 +39,21 @@ public final class FieldValidator {
         return ct != null && COUNTRY_PATTERN.matcher(ct).matches();
     }
 
+    public static boolean containsBadWord(String input) {
+        String normalized = input.toLowerCase()
+                .replace("3", "e")
+                .replace("0", "o")
+                .replace("1", "i")
+                .replace("!", "i")
+                .replace("$", "s")
+                .replace("@", "a");
+
+        for (String word : BAD_WORDS) {
+            if (normalized.contains(word)) return true;
+        }
+        return false;
+    }
+
     // Attributi
     private static final Pattern FULL_NAME_PATTERN = Pattern.compile("^(?=.{1,50}$)\\S+(?:\\s+\\S+)+$");
     private static final Pattern USERNAME_PATTERN = Pattern.compile("^[a-zA-Z0-9_-]{3,16}$");
@@ -43,4 +61,7 @@ public final class FieldValidator {
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^(?=.{1,254}$)[a-zA-Z0-9](?!.*?[.]{2})[a-zA-Z0-9._%+-]{0,63}@[a-zA-Z0-9](?!.*--)[a-zA-Z0-9.-]{0,253}\\.[a-zA-Z]{2,}$");
     private static final Pattern CELLPHONE_PATTERN = Pattern.compile("^\\+?[0-9]{9,15}$");
     private static final Pattern COUNTRY_PATTERN = Pattern.compile("^[a-z]{2}$");
+    private static final Set<String> BAD_WORDS = new HashSet<>(Arrays.asList(
+            "faggot", "nigger"
+    ));
 }

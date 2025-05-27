@@ -61,7 +61,9 @@ public class AuthFilter implements Filter {
         // Default: blocca se non loggato
         if (logged)
             chain.doFilter(request, response);
-        else
+        else {
             res.sendRedirect(LOGIN_PAGE + "?error=auth");
+            return;
+        }
     }
 }

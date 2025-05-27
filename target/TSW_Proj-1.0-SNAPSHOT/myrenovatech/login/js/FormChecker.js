@@ -104,7 +104,7 @@ async function checkAJAXField(url, str) {
     try {
         const res = await fetch(`${url}${encodeURIComponent(str)}`);
         const data = await res.json();
-        return data.available;
+        return data.result;
     } catch (err) {
         console.error("AJAX error:", err);
         return false;

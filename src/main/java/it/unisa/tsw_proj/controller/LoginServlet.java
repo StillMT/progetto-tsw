@@ -27,13 +27,13 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("pass");
 
         if (!checkParams(username, password)) {
-            sendToLogin(response, "0");
+            sendToLoginWithError(response);
             return;
         }
 
         UserBean us = UserDAO.doLoginUser(username, password);
         if (us == null) {
-            sendToLogin(response, "0");
+            sendToLoginWithError(response);
             return;
         }
 
@@ -42,8 +42,8 @@ public class LoginServlet extends HttpServlet {
     }
 
     // Metodi privati
-    private static void sendToLogin(HttpServletResponse response, String error) throws IOException {
-        response.sendRedirect("/myrenovatech/login" + (error != null ? "?error=" + error : ""));
+    private static void sendToLoginWithError(HttpServletResponse response) throws IOException {
+        response.sendRedirect("/myrenovatech/login?error=wrong_data");
     }
 
     private static boolean checkParams(String username, String password) {

@@ -68,11 +68,6 @@ input[type="submit"]:hover {
     cursor: pointer;
 }
 
-.pointer::before {
-    content: " ";
-    text-decoration: none;
-}
-
 .toggle-paragraph {
     margin: 0;
     font-size: 0.75em;

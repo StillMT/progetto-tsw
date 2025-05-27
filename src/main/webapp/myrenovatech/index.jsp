@@ -10,7 +10,42 @@
     <%@ include file="/WEB-INF/includes/header.jspf" %>
 
     <main class="main-cont">
+      <div class="cards-container">
+        <a href="profile/">
+          <div class="card">
+            <img src="/GeneralData/imgs/myrenovatech/profile.svg" />
+            <span class="card-title">Profilo</span>
+          </div>
+        </a>
+        <a href="orders/">
+          <div class="card">
+            <img src="/GeneralData/imgs/myrenovatech/orders.svg" />
+            <span class="card-title">Ordini</span>
+          </div>
+        </a>
 
+        <% if (((UserBean) request.getSession().getAttribute("user")).isAdmin()) { %>
+        <a href="admin/catalogue/">
+          <div class="card">
+            <img src="admin/imgs/catalogue.svg" />
+            <span class="card-title">Catalogo</span>
+          </div>
+        </a>
+        <a href="admin/customers/">
+          <div class="card">
+            <img src="admin/imgs/customers-orders.svg" />
+            <span class="card-title">Ordini per cliente</span>
+          </div>
+        </a>
+        <% } %>
+
+        <a href="${pageContext.request.contextPath}/logout">
+          <div class="card">
+            <img src="${pageContext.request.contextPath}/GeneralData/imgs/myrenovatech/logout.svg" />
+            <span class="card-title">Logout</span>
+          </div>
+        </a>
+      </div>
     </main>
 
     <%@ include file="/WEB-INF/includes/footer.jspf" %>
