@@ -22,8 +22,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 15em;
-    height: 17em;
+    width: 13em;
+    height: 16em;
     border: 2px black solid;
     border-radius: 15px;
     background-color: white;
@@ -36,6 +36,6 @@
 
 .card-title {
     margin-top: 1em;
+    font-size: 1.4em;
     color: black;
-    font-size: 2em;
 }

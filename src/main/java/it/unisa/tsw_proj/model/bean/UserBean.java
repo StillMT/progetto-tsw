@@ -1,6 +1,7 @@
 package it.unisa.tsw_proj.model.bean;
 
 import it.unisa.tsw_proj.model.UserRole;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class UserBean {
 
@@ -58,6 +59,12 @@ public class UserBean {
 
     public boolean isAdmin() {
         return role.isAdmin();
+    }
+
+    public static boolean isAdmin(HttpServletRequest req) {
+        UserBean us = (UserBean) req.getSession().getAttribute("user");
+
+        return us != null && us.isAdmin();
     }
 
     // Metodi modificatori

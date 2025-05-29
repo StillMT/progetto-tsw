@@ -1,6 +1,7 @@
 package it.unisa.tsw_proj.model.dao;
 
-import it.unisa.tsw_proj.model.bean.CategoryBean;
+import it.unisa.tsw_proj.model.bean.ProductBean;
+import it.unisa.tsw_proj.model.bean.ProductVariantBean;
 import it.unisa.tsw_proj.utils.DriverManagerConnectionPool;
 
 import java.sql.Connection;
@@ -11,12 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class CategoryDAO {
+public class ProductVariantDAO {
 
     // Metodi
-    public static List<CategoryBean> doGetAllCategories() {
-        final String sql = "SELECT * FROM category ORDER BY name";
-        List<CategoryBean> categories = new ArrayList<CategoryBean>();
+    public static List<ProductVariantBean> doGetAllProductsVariants() {
+        final String sql = "SELECT * FROM product_variant ORDER BY id_product";
+        final List<ProductVariantBean> list = new ArrayList<ProductVariantBean>();
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -28,17 +29,16 @@ public class CategoryDAO {
 
             rs = ps.executeQuery();
             while (rs.next())
-                categories.add(new CategoryBean(rs.getInt("id"), rs.getString("name")));
-
+                list.add(new ProductVariantBean(rs.getInt("id"), rs.getInt("id_product"), rs.getString("color"), rs.getInt("storage"), rs.getInt("stock"), rs.getDouble("price")));
         } catch (SQLException e) {
             DriverManagerConnectionPool.logSqlError(e, logger);
         } finally {
             DriverManagerConnectionPool.closeSqlParams(con, ps, rs);
         }
 
-        return categories;
+        return list;
     }
 
     // Attributi
-    private static final Logger logger = Logger.getLogger(CategoryDAO.class.getName());
+    private static final Logger logger = Logger.getLogger(ProductVariantDAO.class.getName());
 }

@@ -1,0 +1,12 @@
+<%@ page import="java.util.List" %>
+<%@ page import="it.unisa.tsw_proj.model.bean.CategoryBean" %>
+<%@ page import="it.unisa.tsw_proj.model.dao.CategoryDAO" %>
+
+<% List<CategoryBean> cat = CategoryDAO.doGetAllCategories(); %>
+
+<label for="category">Categoria</label>
+<select name="category" id="category">
+    <% for (CategoryBean c : cat) { %>
+    <option name="<%= c.getId() %>"><%= c.getName() %></option>
+    <% } %>
+</select>

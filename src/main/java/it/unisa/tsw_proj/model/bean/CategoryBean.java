@@ -2,6 +2,14 @@ package it.unisa.tsw_proj.model.bean;
 
 public class CategoryBean {
 
+    // Costruttori
+    public CategoryBean() {}
+
+    public CategoryBean(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     // Metodi di accesso
     public int getId() {
         return id;

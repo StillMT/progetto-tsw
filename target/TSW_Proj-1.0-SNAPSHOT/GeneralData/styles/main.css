@@ -16,3 +16,7 @@ body {
 .main-cont.fixed-bar {
     padding-top: 5.5em;
 }
+
+img {
+    pointer-events: none;
+}

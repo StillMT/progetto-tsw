@@ -10,37 +10,46 @@ if (countrySelect) {
     countrySelect.addEventListener("change", countryToggler);
 }
 
-document.getElementById("register").addEventListener("submit", function (ev) {
+const registerInputs = document.querySelectorAll("#register input");
+registerInputs.forEach(input => {
+    input.addEventListener('input', () => checkInput(input));
+});
+
+document.getElementById("register").addEventListener("submit", async function (ev) {
+    ev.preventDefault();
     let formOk = true;
+
+    for (const input of registerInputs) {
+        await checkInput(input);
+    }
 
     for (const el of document.querySelectorAll(".form-error")) {
         if (el.style.display === "block") {
-            ev.preventDefault();
-            formOk = false;
             showPopup("Attenzione", "Alcuni campi sono invalidi! Controlla e riprova.");
-            break;
+            formOk = false;
+            return;
         }
     }
 
-    if (!countrySelected && formOk) {
+    if (!countrySelected) {
         showPopup("Attenzione", "Sei sicuro di aver selezionato il paese giusto?");
         countrySelected = true;
-        ev.preventDefault();
+        return;
     }
+
+    ev.target.submit();
 });
 
-document.querySelectorAll("#register input").forEach(input => {
-    input.addEventListener('input', function () {
-        switch (input.name) {
-            case 'fullName': validateName(input); break;
-            case 'username': validateUsername(input); break;
-            case 'pass': validatePass(input); break;
-            case 'rep-pass': validateRepPass(input); break;
-            case 'email': validateEmail(input); break;
-            case 'cell': validateCell(input); break;
-        }
-    });
-});
+async function checkInput(input) {
+    switch (input.name) {
+        case 'fullName': validateName(input); break;
+        case 'username': await validateUsername(input); break;
+        case 'pass': validatePass(input); break;
+        case 'rep-pass': validateRepPass(input); break;
+        case 'email': await validateEmail(input); break;
+        case 'cell': await validateCell(input); break;
+    }
+}
 
 function toggleVisibility(element, show) {
     element.style.display = show ? "block" : "none";
