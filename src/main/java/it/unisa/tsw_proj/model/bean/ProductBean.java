@@ -10,6 +10,7 @@ public class ProductBean {
 
     public ProductBean(int id, String brand, String model, String description, double basePrice, int idCategory) {
         this.id = id;
+        this.brand = brand;
         this.model = model;
         this.description = description;
         this.basePrice = basePrice;

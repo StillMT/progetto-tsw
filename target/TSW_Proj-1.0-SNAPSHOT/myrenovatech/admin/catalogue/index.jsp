@@ -12,7 +12,9 @@
     <main class="main-cont">
       <div class="cat-container">
         <div class="add-product-container">
-          <span class="add-product-title">Aggiungi/Modifica prodotto</span>
+          <div class="add-product-header">
+            <span class="add-product-title"><%= langBundle.getString(pageName + ".addProd") %> <%= langBundle.getString(pageName + ".product") %></span>
+          </div>
           <form action="#" method="post" enctype="multipart/form-data">
             <div class="column">
               <div class="item">
@@ -60,26 +62,17 @@
         <div class="product-list-container">
           <div class="product-list-title-header">
             <span class="product-list-title">Catalogo prodotti</span>
-            <span>
+            <span class="refresh-list-span">
               <label for="refresh-list">Aggiorna lista</label>
               <button id="refresh-list"></button>
             </span>
           </div>
           <div class="product-list-header">
-            <span>Nome</span>
-            <span>Prezzo</span>
-            <span>Categoria</span>
+            <span>Brand</span>
+            <span>Modello</span>
+            <span>Descrizione</span>
+            <span>Varianti</span>
             <span>Azioni</span>
-          </div>
-
-          <div class="product-row">
-            <span data-label="Nome">iPhone 14</span>
-            <span data-label="Prezzo">999.99€</span>
-            <span data-label="Categoria">Smartphone</span>
-            <span data-label="Azioni">
-                <button>Modifica</button>
-                <button>Elimina</button>
-              </span>
           </div>
         </div>
       </div>
@@ -87,7 +80,19 @@
       <%@ include file="/WEB-INF/includes/popup.jspf" %>
     </main>
 
+    <script>
+      const headerTitleAdd = "<%= langBundle.getString(pageName + ".addProd") %>";
+      const headerTitleEdit = "<%= langBundle.getString(pageName + ".editProd") %>";
+      const headerTitleProduct = "<%= langBundle.getString(pageName + ".product") %>";
+
+      const variantTitle = "<%= langBundle.getString(pageName + ".variantTitle") %>";
+      const popUpTitleNoVariants = "<%= langBundle.getString(pageName + ".popUpTitleNoVariants") %>";
+      const popUpMessageNoVariants = "<%= langBundle.getString(pageName + ".popUpMessageNoVariants") %>";
+
+      const deletePhrase = "<%= langBundle.getString(pageName + ".deletePhrase") %>";
+    </script>
     <script src="js/AddVariantHandler.js"></script>
+    <script src="js/ProductListHandler.js"></script>
 
     <%@ include file="/WEB-INF/includes/footer.jspf" %>
   </body>

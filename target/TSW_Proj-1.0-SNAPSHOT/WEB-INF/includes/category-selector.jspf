@@ -7,6 +7,6 @@
 <label for="category">Categoria</label>
 <select name="category" id="category">
     <% for (CategoryBean c : cat) { %>
-    <option name="<%= c.getId() %>"><%= c.getName() %></option>
+    <option value="<%= c.getId() %>"><%= c.getName() %></option>
     <% } %>
 </select>

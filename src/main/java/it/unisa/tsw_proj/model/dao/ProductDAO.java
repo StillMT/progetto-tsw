@@ -9,7 +9,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class ProductDAO {
@@ -17,8 +19,12 @@ public class ProductDAO {
     // Metodi
     public static List<ProductBean> doGetAllProducts() {
         final String sql = "SELECT * FROM product";
-        final List<ProductBean> products = new ArrayList<ProductBean>();
-        final List<ProductVariantBean> variants = ProductVariantDAO.doGetAllProductsVariants();
+        List<ProductBean> products = new ArrayList<>();
+        List<ProductVariantBean> variants = ProductVariantDAO.doGetAllProductsVariants();
+
+        Map<Integer, List<ProductVariantBean>> variantMap = new HashMap<>();
+        for (ProductVariantBean v : variants)
+            variantMap.computeIfAbsent(v.getIdProduct(), _ -> new ArrayList<>()).add(v);
 
         Connection con = null;
         PreparedStatement ps = null;
@@ -27,24 +33,26 @@ public class ProductDAO {
         try {
             con = DriverManagerConnectionPool.getConnection();
             ps = con.prepareStatement(sql);
-
             rs = ps.executeQuery();
+
             while (rs.next()) {
-                boolean found = false;
+                ProductBean product = new ProductBean(
+                        rs.getInt("id"),
+                        rs.getString("brand"),
+                        rs.getString("model"),
+                        rs.getString("description"),
+                        rs.getInt("base_price"),
+                        rs.getInt("id_category")
+                );
 
-                ProductBean product = new ProductBean(rs.getInt("id"), rs.getString("brand"), rs.getString("model"), rs.getString("description"), rs.getInt("base_price"), rs.getInt("id_category"));
-
-                for (ProductVariantBean productVariantBean : variants)
-                    if (productVariantBean.getIdProduct() == product.getId()) {
-                        found = true;
-
-                        product.addVariant(productVariantBean);
-                        variants.remove(productVariantBean);
-                    } else if (found)
-                        break;
+                List<ProductVariantBean> productVariants = variantMap.get(product.getId());
+                if (productVariants != null)
+                    for (ProductVariantBean variant : productVariants)
+                        product.addVariant(variant);
 
                 products.add(product);
             }
+
         } catch (SQLException e) {
             DriverManagerConnectionPool.logSqlError(e, logger);
         } finally {
@@ -52,6 +60,39 @@ public class ProductDAO {
         }
 
         return products;
+    }
+
+    public static boolean doDeleteProduct(String idStr) {
+        Integer id = null;
+        try {
+
+            id = Integer.parseInt(idStr);
+
+        } catch (NumberFormatException _) {
+            return false;
+        }
+
+        final String sql = "DELETE p, pv FROM product p LEFT JOIN product_variant pv ON pv.id_product = p.id WHERE p.id = ?";
+        boolean result = false;
+
+        Connection con = null;
+        PreparedStatement ps = null;
+
+        try {
+            con = DriverManagerConnectionPool.getConnection();
+            ps = con.prepareStatement(sql);
+
+            ps.setInt(1, id);
+
+            if (ps.executeUpdate() > 0)
+                result = true;
+        } catch (SQLException e) {
+            DriverManagerConnectionPool.logSqlError(e, logger);
+        } finally {
+            DriverManagerConnectionPool.closeSqlParams(con, ps);
+        }
+
+        return result;
     }
 
     // Attributi

@@ -1,11 +1,13 @@
 package it.unisa.tsw_proj.controller;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.util.List;
 
 import it.unisa.tsw_proj.model.bean.ProductBean;
 import it.unisa.tsw_proj.model.bean.ProductVariantBean;
 import it.unisa.tsw_proj.model.dao.ProductDAO;
+import it.unisa.tsw_proj.model.dao.UserDAO;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.*;
 import jakarta.servlet.http.*;
@@ -16,7 +18,11 @@ import org.json.JSONObject;
 public class ProductsHandlerServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (request.getParameterMap().containsKey("getList")) {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        Writer w = response.getWriter();
+
+        if (request.getParameter("getList") != null) {
             JSONArray productsJson = new JSONArray();
 
             for (ProductBean p : ProductDAO.doGetAllProducts())
@@ -29,10 +35,9 @@ public class ProductsHandlerServlet extends HttpServlet {
                         .put("id_category", p.getIdCategory())
                         .put("variants", getJSONVariants(p.getProductVariants())));
 
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(new JSONObject().put("products", productsJson).toString());
-        }
+            w.write(new JSONObject().put("products", productsJson).toString());
+        } else if (request.getParameter("deleteProduct") != null)
+            w.write("{\"result\": " + ProductDAO.doDeleteProduct(request.getParameter("id")) + "}");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -1,6 +1,5 @@
 package it.unisa.tsw_proj.model.dao;
 
-import it.unisa.tsw_proj.model.bean.ProductBean;
 import it.unisa.tsw_proj.model.bean.ProductVariantBean;
 import it.unisa.tsw_proj.utils.DriverManagerConnectionPool;
 
@@ -17,7 +16,7 @@ public class ProductVariantDAO {
     // Metodi
     public static List<ProductVariantBean> doGetAllProductsVariants() {
         final String sql = "SELECT * FROM product_variant ORDER BY id_product";
-        final List<ProductVariantBean> list = new ArrayList<ProductVariantBean>();
+        final List<ProductVariantBean> list = new ArrayList<>();
 
         Connection con = null;
         PreparedStatement ps = null;
