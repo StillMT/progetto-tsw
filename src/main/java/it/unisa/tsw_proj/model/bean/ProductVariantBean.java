@@ -16,6 +16,13 @@ public class ProductVariantBean {
         this.price = price;
     }
 
+    public ProductVariantBean(String hexColor, int storage, int stock, double price) {
+        color = Color.decode(hexColor);
+        this.storage = storage;
+        this.stock = stock;
+        this.price = price;
+    }
+
     // Metodi di accesso
     public int getId() {
         return id;

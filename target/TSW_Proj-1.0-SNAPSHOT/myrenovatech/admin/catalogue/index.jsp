@@ -5,6 +5,14 @@
 <!DOCTYPE html>
 <html>
   <% final String pageName = "adminCatalogue"; %>
+
+  <%
+    String error = null;
+    String par = request.getParameter("error");
+    if (par != null && par.equals("invalid_field"))
+      error = langBundle.getString(pageName + ".invalidFieldsError");
+  %>
+
   <%@ include file="/WEB-INF/includes/head.jspf" %>
   <body>
     <%@ include file="/WEB-INF/includes/header.jspf" %>
@@ -15,7 +23,12 @@
           <div class="add-product-header">
             <span class="add-product-title"><%= langBundle.getString(pageName + ".addProd") %> <%= langBundle.getString(pageName + ".product") %></span>
           </div>
-          <form action="#" method="post" enctype="multipart/form-data">
+
+          <% if (error != null) { %>
+          <div class="error-box"><%= error %></div>
+          <% } %>
+
+          <form action="../products-handler" method="post" enctype="multipart/form-data">
             <div class="column">
               <div class="item">
                 <label for="brand">Brand</label>
@@ -31,7 +44,7 @@
             <div class="column">
               <div class="item">
                 <label for="model">Modello</label>
-                <input type="text" id="model" name="model" placeholder="iPhone 14 Pro Max" />
+                <input type="text" id="model" name="model" placeholder="iPhone 14 Pro Max" maxlength="50" />
               </div>
 
               <div class="item">
@@ -49,13 +62,18 @@
             <div class="column">
               <div class="item">
                 <label for="images">Carica immagini</label>
-                <input type="file" name="images" id="images" multiple accept="image/*" />
+                <input type="file" id="images" multiple accept="image/*" />
+                <ul id="image-list" class="file-list"></ul>
+                <div id="hidden-image-inputs"></div>
+                <div id="hidden-kept-images"></div>
               </div>
 
               <div class="item">
                 <input type="submit" value="Aggiungi prodotto" />
               </div>
             </div>
+
+            <input type="hidden" id="action" name="action" value="add" />
           </form>
         </div>
 
@@ -86,12 +104,15 @@
       const headerTitleProduct = "<%= langBundle.getString(pageName + ".product") %>";
 
       const variantTitle = "<%= langBundle.getString(pageName + ".variantTitle") %>";
-      const popUpTitleNoVariants = "<%= langBundle.getString(pageName + ".popUpTitleNoVariants") %>";
+      const popUpTitle = "<%= langBundle.getString(pageName + ".popUpTitle") %>";
       const popUpMessageNoVariants = "<%= langBundle.getString(pageName + ".popUpMessageNoVariants") %>";
 
       const deletePhrase = "<%= langBundle.getString(pageName + ".deletePhrase") %>";
+
+      const popUpMessageImageLimit = "<%= langBundle.getString(pageName + ".popUpMessageImageLimit") %>";
     </script>
     <script src="js/AddVariantHandler.js"></script>
+    <script src="js/FileListHandler.js"></script>
     <script src="js/ProductListHandler.js"></script>
 
     <%@ include file="/WEB-INF/includes/footer.jspf" %>

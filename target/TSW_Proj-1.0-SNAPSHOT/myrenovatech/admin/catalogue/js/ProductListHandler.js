@@ -1,3 +1,5 @@
+const actionType = document.getElementById("action");
+
 document.getElementById("refresh-list").addEventListener("click", async function () {
     function getTextColor(bgColor) {
         const r = parseInt(bgColor.slice(1, 3), 16);
@@ -8,7 +10,7 @@ document.getElementById("refresh-list").addEventListener("click", async function
     }
 
     try {
-        const res = await fetch("/myrenovatech/admin/products-handler?getList");
+        const res = await fetch("/myrenovatech/admin/products-handler?action=getList");
         const products = await res.json();
         const container = document.querySelector(".product-list-container");
         container.querySelectorAll(".product-row").forEach(el => el.remove());
@@ -68,7 +70,7 @@ function handleDelete(btn) {
 
     async function deleteProduct(id) {
         try {
-            const res = await fetch(`/myrenovatech/admin/products-handler?deleteProduct&id=${id}`);
+            const res = await fetch(`/myrenovatech/admin/products-handler?action=deleteProduct&id=${id}`);
             console.log(res);
             const json = await res.json();
             console.log(json);
@@ -125,12 +127,16 @@ function cleanAllVariants() {
 
 function editProduct(data) {
     function closeEdit(callBtn) {
-        if (hidden) form.removeChild(hidden);
+        if (hidden)
+            form.removeChild(hidden);
         header.removeChild(callBtn);
         submitBtn.value = title.textContent = `${headerTitleAdd} ${headerTitleProduct}`;
         brandInput.value = modelInput.value = descInput.value = "";
         categoryInput.selectedIndex = 0;
         cleanAllVariants();
+        addVariant();
+        cleanFileList();
+        actionType.value = "add";
     }
 
     brandInput.value = data.brand;
@@ -162,4 +168,7 @@ function editProduct(data) {
         form.appendChild(hidden);
     }
     hidden.value = data.id;
+    actionType.value = "edit";
+
+    loadExistingImages(data.id);
 }

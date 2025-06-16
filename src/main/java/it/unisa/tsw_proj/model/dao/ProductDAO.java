@@ -4,10 +4,7 @@ import it.unisa.tsw_proj.model.bean.ProductBean;
 import it.unisa.tsw_proj.model.bean.ProductVariantBean;
 import it.unisa.tsw_proj.utils.DriverManagerConnectionPool;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +38,6 @@ public class ProductDAO {
                         rs.getString("brand"),
                         rs.getString("model"),
                         rs.getString("description"),
-                        rs.getInt("base_price"),
                         rs.getInt("id_category")
                 );
 
@@ -62,15 +58,39 @@ public class ProductDAO {
         return products;
     }
 
-    public static boolean doDeleteProduct(String idStr) {
-        Integer id = null;
+    public static ProductBean doGetProduct(int id) {
+        final String sql = "SELECT * FROM product WHERE id = ?";
+        ProductBean p = null;
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
         try {
+            con = DriverManagerConnectionPool.getConnection();
+            ps = con.prepareStatement(sql);
 
-            id = Integer.parseInt(idStr);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
 
-        } catch (NumberFormatException _) {
-            return false;
+            if (rs.next()) {
+                p = new ProductBean(rs.getInt("id"), rs.getString("brand"), rs.getString("model"), rs.getString("description"), rs.getInt("id_category"));
+                ProductVariantDAO.doGetAllProductVariantsByProductId(id, con, p);
+            }
+        } catch (SQLException e) {
+            DriverManagerConnectionPool.logSqlError(e, logger);
+        } finally {
+            DriverManagerConnectionPool.closeSqlParams(con, ps, rs);
         }
+
+        return p;
+    }
+
+    public static boolean doDeleteProduct(String idStr) {
+        int id;
+
+        try { id = Integer.parseInt(idStr); }
+        catch (NumberFormatException _) { return false; }
 
         final String sql = "DELETE p, pv FROM product p LEFT JOIN product_variant pv ON pv.id_product = p.id WHERE p.id = ?";
         boolean result = false;
@@ -86,6 +106,73 @@ public class ProductDAO {
 
             if (ps.executeUpdate() > 0)
                 result = true;
+        } catch (SQLException e) {
+            DriverManagerConnectionPool.logSqlError(e, logger);
+        } finally {
+            DriverManagerConnectionPool.closeSqlParams(con, ps);
+        }
+
+        return result;
+    }
+
+    public static int doInsertProduct(ProductBean product) {
+        final String sql = "INSERT INTO product VALUES (NULL, ?, ?, ?, ?)";
+        int result = -1;
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            con = DriverManagerConnectionPool.getConnection();
+            con.setAutoCommit(false);
+
+            ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            ps.setString(1, product.getBrand());
+            ps.setString(2, product.getModel());
+            ps.setString(3, product.getDescription());
+            ps.setInt(4, product.getIdCategory());
+
+            if (ps.executeUpdate() > 0) {
+                rs = ps.getGeneratedKeys();
+                if (rs.next())
+                    if (ProductVariantDAO.doInsertVariantBatch(product, con)) {
+                        con.commit();
+                        result = rs.getInt(1);
+                    }
+                    else
+                        con.rollback();
+            }
+
+            con.setAutoCommit(true);
+        } catch (SQLException e) {
+            DriverManagerConnectionPool.logSqlError(e, logger);
+        } finally {
+            DriverManagerConnectionPool.closeSqlParams(con, ps, rs);
+        }
+
+        return result;
+    }
+
+    public static boolean doUpdateProduct(ProductBean product) {
+        final String sql = "UPDATE product SET brand = ?, model = ?, description = ? WHERE id = ?";
+        boolean result = false;
+
+        Connection con = null;
+        PreparedStatement ps = null;
+
+        try {
+            con = DriverManagerConnectionPool.getConnection();
+            ps = con.prepareStatement(sql);
+
+            ps.setString(1, product.getBrand());
+            ps.setString(2, product.getModel());
+            ps.setString(3, product.getDescription());
+            ps.setInt(4, product.getId());
+
+            if (ps.executeUpdate() > 0)
+                result = ProductVariantDAO.doUpdateVariantBatch(product, con);
         } catch (SQLException e) {
             DriverManagerConnectionPool.logSqlError(e, logger);
         } finally {

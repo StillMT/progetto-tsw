@@ -4,6 +4,10 @@ let variantIndex = 0;
 document.getElementById("add-variant").addEventListener("click", () => addVariant());
 
 function addVariant(color, storage, stock, price) {
+    function addValue(value) {
+        return `value="${value}"`;
+    }
+
     const wrapper = document.createElement("div");
     wrapper.classList.add("item");
     if (variantIndex === 0)
@@ -27,13 +31,9 @@ function addVariant(color, storage, stock, price) {
     container.appendChild(wrapper);
 }
 
-function addValue(value) {
-    return `value="${value}"`;
-}
-
 function removeVariant(wrapper) {
     if (variantIndex <= 1) {
-        showPopup(popUpTitleNoVariants, popUpMessageNoVariants);
+        showPopup(popUpTitle, popUpMessageNoVariants);
         return;
     }
 

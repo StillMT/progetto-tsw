@@ -8,12 +8,18 @@ public class ProductBean {
     // Costruttori
     public ProductBean() {}
 
-    public ProductBean(int id, String brand, String model, String description, double basePrice, int idCategory) {
+    public ProductBean(int id, String brand, String model, String description, int idCategory) {
         this.id = id;
         this.brand = brand;
         this.model = model;
         this.description = description;
-        this.basePrice = basePrice;
+        this.idCategory = idCategory;
+    }
+
+    public ProductBean(String brand, String model, String description, int idCategory) {
+        this.brand = brand;
+        this.model = model;
+        this.description = description;
         this.idCategory = idCategory;
     }
 
@@ -32,10 +38,6 @@ public class ProductBean {
 
     public String getDescription() {
         return description;
-    }
-
-    public double getBasePrice() {
-        return basePrice;
     }
 
     public int getIdCategory() {
@@ -63,10 +65,6 @@ public class ProductBean {
         this.description = description;
     }
 
-    public void setBasePrice(double basePrice) {
-        this.basePrice = basePrice;
-    }
-
     public void setIdCategory(int id_category) {
         this.idCategory = id_category;
     }
@@ -88,7 +86,6 @@ public class ProductBean {
     private String brand;
     private String model;
     private String description;
-    private double basePrice;
     private int idCategory;
     private final List<ProductVariantBean> productVariants = new ArrayList<>();
 }
