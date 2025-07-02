@@ -18,14 +18,15 @@ import org.json.JSONObject;
 @WebServlet("/myrenovatech/admin/products-handler")
 @MultipartConfig
 public class ProductsHandlerServlet extends HttpServlet {
-    boolean add = false;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
+
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         Writer w = response.getWriter();
 
-        switch(request.getParameter("action")) {
+        switch(action) {
             case "getList":
                 JSONArray productsJson = new JSONArray();
 
@@ -46,12 +47,13 @@ public class ProductsHandlerServlet extends HttpServlet {
                 break;
 
             case "add":
-                add = true;
-            case "edit": {
+            case "edit":
+                int prodId;
+
                 String brand = request.getParameter("brand");
                 String model = request.getParameter("model");
                 String description = request.getParameter("description");
-                String idCategory = request.getParameter("id_category");
+                String idCategory = request.getParameter("category");
                 String[] vColors = request.getParameterValues("variantColor[]");
                 String[] vStorages = request.getParameterValues("variantStorage[]");
                 String[] vStocks = request.getParameterValues("variantStock[]");
@@ -63,24 +65,17 @@ public class ProductsHandlerServlet extends HttpServlet {
                 }
 
                 ProductBean pb;
-
-                if (add) {
+                if ("add".equals(action)) {
                     pb = new ProductBean(brand, model, description, Integer.parseInt(idCategory));
                     for (int i = 0; i < vColors.length; i++)
                         pb.addVariant(new ProductVariantBean(vColors[i], Integer.parseInt(vStorages[i]), Integer.parseInt(vStocks[i]), Double.parseDouble(vPrices[i])));
 
-                    int newId = ProductDAO.doInsertProduct(pb);
-                    if (newId < 0) {
+                    prodId = ProductDAO.doInsertProduct(pb);
+                    if (prodId < 0) {
                         sendToCatalogue(response, "error_insert");
                         return;
                     }
-
-                    request.setAttribute("id", newId);
-                    request.setAttribute("storeFiles", true);
-                    RequestDispatcher rd = request.getRequestDispatcher("/products/imgs/");
-                    rd.forward(request, response);
                 } else {
-                    int prodId;
                     try {
                         prodId = Integer.parseInt(request.getParameter("productId"));
                     } catch (NumberFormatException _) {
@@ -100,11 +95,10 @@ public class ProductsHandlerServlet extends HttpServlet {
                     }
                 }
 
-                // Gestisci i file modificati ed hai finito (regex al catalogo admin)
-
-                sendToCatalogue(response, null);
+                request.setAttribute("id", prodId);
+                RequestDispatcher rd = request.getRequestDispatcher("/products/productFileServlet");
+                rd.forward(request, response);
                 break;
-            }
         }
     }
 

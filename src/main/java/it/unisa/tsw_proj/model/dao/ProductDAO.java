@@ -15,7 +15,7 @@ public class ProductDAO {
 
     // Metodi
     public static List<ProductBean> doGetAllProducts() {
-        final String sql = "SELECT * FROM product";
+        final String sql = "SELECT * FROM product WHERE isDeleted = FALSE";
         List<ProductBean> products = new ArrayList<>();
         List<ProductVariantBean> variants = ProductVariantDAO.doGetAllProductsVariants();
 
@@ -92,7 +92,7 @@ public class ProductDAO {
         try { id = Integer.parseInt(idStr); }
         catch (NumberFormatException _) { return false; }
 
-        final String sql = "DELETE p, pv FROM product p LEFT JOIN product_variant pv ON pv.id_product = p.id WHERE p.id = ?";
+        final String sql = "UPDATE product SET isDeleted = TRUE WHERE id = ?";
         boolean result = false;
 
         Connection con = null;
@@ -116,7 +116,7 @@ public class ProductDAO {
     }
 
     public static int doInsertProduct(ProductBean product) {
-        final String sql = "INSERT INTO product VALUES (NULL, ?, ?, ?, ?)";
+        final String sql = "INSERT INTO product (brand, model, description, id_category) VALUES (?, ?, ?, ?)";
         int result = -1;
 
         Connection con = null;
@@ -136,13 +136,14 @@ public class ProductDAO {
 
             if (ps.executeUpdate() > 0) {
                 rs = ps.getGeneratedKeys();
-                if (rs.next())
+                if (rs.next()) {
+                    product.setId(rs.getInt(1));
                     if (ProductVariantDAO.doInsertVariantBatch(product, con)) {
                         con.commit();
                         result = rs.getInt(1);
-                    }
-                    else
+                    } else
                         con.rollback();
+                }
             }
 
             con.setAutoCommit(true);
@@ -156,7 +157,7 @@ public class ProductDAO {
     }
 
     public static boolean doUpdateProduct(ProductBean product) {
-        final String sql = "UPDATE product SET brand = ?, model = ?, description = ? WHERE id = ?";
+        final String sql = "UPDATE product SET brand = ?, model = ?, description = ?, id_category = ? WHERE id = ?";
         boolean result = false;
 
         Connection con = null;
@@ -169,7 +170,8 @@ public class ProductDAO {
             ps.setString(1, product.getBrand());
             ps.setString(2, product.getModel());
             ps.setString(3, product.getDescription());
-            ps.setInt(4, product.getId());
+            ps.setInt(4, product.getIdCategory());
+            ps.setInt(5, product.getId());
 
             if (ps.executeUpdate() > 0)
                 result = ProductVariantDAO.doUpdateVariantBatch(product, con);

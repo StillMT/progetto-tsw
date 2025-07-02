@@ -93,7 +93,19 @@ function cleanFileList() {
     hiddenKeptInputs.innerHTML = "";
 }
 
-form2.addEventListener("submit", () => {
+form2.addEventListener("submit", (e) => {
+    let hasErrors = false;
+    document.querySelectorAll(".form-error").forEach(e => {
+        if (e.style.display === "block")
+            hasErrors = true;
+    });
+
+    if (hasErrors) {
+        e.preventDefault();
+        showPopup(popUpTitle, popUpMessageFieldErrors);
+        return;
+    }
+
     hiddenInputs.innerHTML = "";
     hiddenKeptInputs.innerHTML = "";
 

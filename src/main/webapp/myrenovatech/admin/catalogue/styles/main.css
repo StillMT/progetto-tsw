@@ -87,6 +87,11 @@ input, textarea, select {
     overflow-y: auto;
 }
 
+.variant-label-box {
+    display: flex;
+    justify-content: space-between;
+}
+
 .variant-inputs {
     display: flex;
     flex-direction: column;
@@ -174,6 +179,25 @@ input, textarea, select {
 
 input[type="color"] {
     height: 2.5em;
+}
+
+.form-error {
+    display: none;
+}
+
+.form-error > p::before {
+    content: "•";
+    margin-right: 3px;
+}
+
+.form-error > p {
+    color: red;
+    font-size: 0.75em;
+    margin: 0 0 0 5px;
+}
+
+.form-error > p::after {
+    content: ".";
 }
 
 .product-list-container {

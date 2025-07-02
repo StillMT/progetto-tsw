@@ -9,6 +9,15 @@ document.getElementById("refresh-list").addEventListener("click", async function
         return luminance > 140 ? "#000000" : "#ffffff";
     }
 
+    function escapeHtml(str) {
+        return str
+            .replace(/&/g, "&amp;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+    }
+
     try {
         const res = await fetch("/myrenovatech/admin/products-handler?action=getList");
         const products = await res.json();
@@ -24,10 +33,11 @@ document.getElementById("refresh-list").addEventListener("click", async function
 
             const row = document.createElement("div");
             row.className = "product-row";
+            const safeDesc = escapeHtml(p.description);
             row.innerHTML = `
                 <span>${p.brand}</span>
                 <span>${p.model}</span>
-                <span class="truncated-description" title="${p.description}">${p.description}</span>
+                <span class="truncated-description" title="${safeDesc}">${safeDesc}</span>
                 <span class="variant-boxes">${variantHTML}</span>
                 <span class="btns-wrapper">
                     <button class="edit-btn"
@@ -111,19 +121,11 @@ function handleDelete(btn) {
 const form = document.querySelector("form");
 const header = document.querySelector(".add-product-header");
 const title = document.querySelector(".add-product-title");
-const brandInput = document.getElementById("brand");
-const modelInput = document.getElementById("model");
 const descInput = document.getElementById("description");
 const categoryInput = document.getElementById("category");
 const submitBtn = document.querySelector('input[type="submit"]');
-const variantContainer = document.getElementById("add-variant-column");
 
 let hidden;
-
-function cleanAllVariants() {
-    variantContainer.innerHTML = "";
-    variantIndex = 0;
-}
 
 function editProduct(data) {
     function closeEdit(callBtn) {
@@ -146,7 +148,7 @@ function editProduct(data) {
 
     cleanAllVariants();
     const variants = JSON.parse(decodeURIComponent(data.variants));
-    variants.forEach(v => addVariant(v.color, v.storage, v.stock, v.price));
+    variants.forEach(v => addVariant(v.id, v.color, v.storage, v.stock, v.price));
 
     submitBtn.value = title.textContent = `${headerTitleEdit} ${headerTitleProduct}`;
 
@@ -165,9 +167,9 @@ function editProduct(data) {
         hidden.type = "hidden";
         hidden.id = "productIdHidden";
         hidden.name = "productId";
-        form.appendChild(hidden);
     }
     hidden.value = data.id;
+    form.appendChild(hidden);
     actionType.value = "edit";
 
     loadExistingImages(data.id);

@@ -22,14 +22,12 @@ document.addEventListener("DOMContentLoaded", function () {
         if (field) field.classList.remove("input-error");
     }
 
-    // === VALIDAZIONI REGEX ===
     const regexName = /^[A-Z][a-zà-ÿ']+\s[A-Z][a-zà-ÿ']+$/;
     const regexEmail =/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     const regexCell = /^\d{1,11}$/;
     const regexOrder = /^\d{3}-\d{3}-\d{4}$/;
 
-    // === VALIDAZIONE LIVE ===
     name.addEventListener("input", () => {
         const trimmed = name.value.trim();
         if (!regexName.test(trimmed) || name.value !== trimmed) {
@@ -56,7 +54,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // === VALIDAZIONE LIVE — Numero ordine ===
     orderId.addEventListener("input", () => {
         if (!regexOrder.test(orderId.value.trim())) {
             showError("orderIdError", orderId);
@@ -65,7 +62,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // === VALIDAZIONE COMPLETA SU SUBMIT ===
     form.addEventListener("submit", function (e) {
         let isValid = true;
 

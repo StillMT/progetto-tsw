@@ -9,8 +9,20 @@
   <%
     String error = null;
     String par = request.getParameter("error");
-    if (par != null && par.equals("invalid_field"))
-      error = langBundle.getString(pageName + ".invalidFieldsError");
+    if (par != null)
+        switch (par) {
+          case "invalid_field":
+            error = langBundle.getString(pageName + ".invalidFieldsError");
+            break;
+
+          case "error_insert":
+            error = langBundle.getString(pageName + ".errorProdInsert");
+            break;
+
+          case "internal_error":
+            error = langBundle.getString(pageName + ".internalError");
+            break;
+        };
   %>
 
   <%@ include file="/WEB-INF/includes/head.jspf" %>
@@ -33,6 +45,9 @@
               <div class="item">
                 <label for="brand">Brand</label>
                 <input type="text" id="brand" name="brand" placeholder="Apple" maxlength="30" />
+                <div class="form-error" id="brand-error">
+                  <p>Brand non valido</p>
+                </div>
               </div>
 
               <div class="item">
@@ -45,6 +60,9 @@
               <div class="item">
                 <label for="model">Modello</label>
                 <input type="text" id="model" name="model" placeholder="iPhone 14 Pro Max" maxlength="50" />
+                <div class="form-error" id="model-error">
+                  <p>Modello non valido</p>
+                </div>
               </div>
 
               <div class="item">
@@ -110,7 +128,13 @@
       const deletePhrase = "<%= langBundle.getString(pageName + ".deletePhrase") %>";
 
       const popUpMessageImageLimit = "<%= langBundle.getString(pageName + ".popUpMessageImageLimit") %>";
+      const popUpMessageFieldErrors = "<%= langBundle.getString(pageName + ".popUpMessageFieldErrors") %>";
+
+      const storageError = "<%= langBundle.getString(pageName + ".storageError") %>";
+      const stockError = "<%= langBundle.getString(pageName + ".stockError") %>";
+      const priceError = "<%= langBundle.getString(pageName + ".priceError") %>";
     </script>
+    <script src="js/FormChecker.js"></script>
     <script src="js/AddVariantHandler.js"></script>
     <script src="js/FileListHandler.js"></script>
     <script src="js/ProductListHandler.js"></script>
