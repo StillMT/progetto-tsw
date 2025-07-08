@@ -133,6 +133,12 @@
 
         </main>
 
+        <script>
+            const popupTitle = "<%= langBundle.getString(pageName + ".popupTitle") %>";
+
+            const popupMessageInvalidFields = "<%= langBundle.getString(pageName + ".popupMessageInvalidFields") %>";
+            const popupMessageCountrySure = "<%= langBundle.getString(pageName + ".popupMessageCountrySure") %>";
+        </script>
         <script src="js/FormChecker.js"></script>
         <script src="js/FormToggler.js"></script>
 

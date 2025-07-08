@@ -70,7 +70,7 @@
             <div class="div-label"><%= langBundle.getString(pageName + ".addFile") %></div>
             <input type="file" name="opt-file" />
 
-            <input type="submit" />
+            <input type="submit" value="<%= langBundle.getString(pageName + ".send") %>" />
         </form>
     </div>
 </main>

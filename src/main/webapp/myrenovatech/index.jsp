@@ -14,13 +14,13 @@
         <a href="profile/">
           <div class="card">
             <img src="/GeneralData/imgs/myrenovatech/profile.svg" />
-            <span class="card-title">Profilo</span>
+            <span class="card-title"><%= langBundle.getString(pageName + ".profile") %></span>
           </div>
         </a>
         <a href="orders/">
           <div class="card">
             <img src="/GeneralData/imgs/myrenovatech/orders.svg" />
-            <span class="card-title">Ordini</span>
+            <span class="card-title"><%= langBundle.getString(pageName + ".orders") %></span>
           </div>
         </a>
 
@@ -28,13 +28,13 @@
         <a href="admin/catalogue/">
           <div class="card">
             <img src="admin/imgs/catalogue.svg" />
-            <span class="card-title">Catalogo</span>
+            <span class="card-title"><%= langBundle.getString(pageName + ".catalogue") %></span>
           </div>
         </a>
         <a href="admin/customers/">
           <div class="card">
             <img src="admin/imgs/customers-orders.svg" />
-            <span class="card-title">Ordini per cliente</span>
+            <span class="card-title"><%= langBundle.getString(pageName + ".ordersByCustomer") %></span>
           </div>
         </a>
         <% } %>
@@ -42,7 +42,7 @@
         <a href="${pageContext.request.contextPath}/logout">
           <div class="card">
             <img src="${pageContext.request.contextPath}/GeneralData/imgs/myrenovatech/logout.svg" />
-            <span class="card-title">Logout</span>
+            <span class="card-title"><%= langBundle.getString(pageName + ".logout") %></span>
           </div>
         </a>
       </div>

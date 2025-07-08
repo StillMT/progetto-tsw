@@ -50,6 +50,13 @@ function addVariant(id, color, storage, stock, price) {
     const stockErrorDiv = wrapper.querySelector(`#error-stock-${variantIndex}`);
     const priceErrorDiv = wrapper.querySelector(`#error-price-${variantIndex}`);
 
+    variantFields.push(storageInput);
+    variantFields.push(storageErrorDiv);
+    variantFields.push(stockInput);
+    variantFields.push(stockErrorDiv);
+    variantFields.push(priceInput);
+    variantFields.push(priceErrorDiv);
+
     storageInput.addEventListener("input", () => checkStorageStock(storageInput, storageErrorDiv));
     stockInput.addEventListener("input", () => checkStorageStock(stockInput, stockErrorDiv));
     priceInput.addEventListener("input", () => checkPrice(priceInput, priceErrorDiv));
@@ -74,6 +81,7 @@ function removeVariant(wrapper) {
 function cleanAllVariants() {
     container.innerHTML = "";
     variantIndex = 0;
+    variantFields = [];
 }
 
 document.addEventListener("DOMContentLoaded", () => {

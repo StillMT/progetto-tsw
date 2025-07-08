@@ -33,18 +33,17 @@ document.getElementById("refresh-list").addEventListener("click", async function
 
             const row = document.createElement("div");
             row.className = "product-row";
-            const safeDesc = escapeHtml(p.description);
             row.innerHTML = `
-                <span>${p.brand}</span>
-                <span>${p.model}</span>
-                <span class="truncated-description" title="${safeDesc}">${safeDesc}</span>
+                <span>${escapeHtml(p.brand)}</span>
+                <span>${escapeHtml(p.model)}</span>
+                <span class="truncated-description" title="${escapeHtml(p.description)}">${escapeHtml(p.description)}</span>
                 <span class="variant-boxes">${variantHTML}</span>
                 <span class="btns-wrapper">
                     <button class="edit-btn"
                         data-id="${p.id}"
-                        data-brand="${p.brand}"
-                        data-model="${p.model}"
-                        data-description="${p.description}"
+                        data-brand="${escapeHtml(p.brand)}"
+                        data-model="${escapeHtml(p.model)}"
+                        data-description="${escapeHtml(p.description)}"
                         data-category="${p.id_category}"
                         data-variants='${encodeURIComponent(JSON.stringify(p.variants))}'>
                         ${headerTitleEdit}
@@ -141,9 +140,13 @@ function editProduct(data) {
         actionType.value = "add";
     }
 
+    document.querySelectorAll(".form-error").forEach(el => {
+        el.style.display = "none";
+    });
+
     brandInput.value = data.brand;
     modelInput.value = data.model;
-    descInput.value = data.description;
+    descInput.value = data.description.replace(/"/g, '\\"');
     categoryInput.value = data.category;
 
     cleanAllVariants();

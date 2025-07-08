@@ -43,25 +43,25 @@
           <form action="../products-handler" method="post" enctype="multipart/form-data">
             <div class="column">
               <div class="item">
-                <label for="brand">Brand</label>
-                <input type="text" id="brand" name="brand" placeholder="Apple" maxlength="30" />
+                <label for="brand"><%= langBundle.getString(pageName + ".apple") %></label>
+                <input type="text" id="brand" name="brand" placeholder="<%= langBundle.getString(pageName + ".applePlaceholder") %>" maxlength="30" />
                 <div class="form-error" id="brand-error">
-                  <p>Brand non valido</p>
+                  <p><%= langBundle.getString(pageName + ".invalidBrand") %></p>
                 </div>
               </div>
 
               <div class="item">
-                <label for="description">Descrizione</label>
-                <textarea name="description" id="description" rows="4" placeholder="Breve descrizione del prodotto"></textarea>
+                <label for="description"><%= langBundle.getString(pageName + ".description") %></label>
+                <textarea name="description" id="description" rows="4" placeholder="<%= langBundle.getString(pageName + ".descriptionPlaceholder") %>"></textarea>
               </div>
             </div>
 
             <div class="column">
               <div class="item">
-                <label for="model">Modello</label>
-                <input type="text" id="model" name="model" placeholder="iPhone 14 Pro Max" maxlength="50" />
+                <label for="model"><%= langBundle.getString(pageName + ".model") %></label>
+                <input type="text" id="model" name="model" placeholder="<%= langBundle.getString(pageName + ".modelPlaceholder") %>" maxlength="50" />
                 <div class="form-error" id="model-error">
-                  <p>Modello non valido</p>
+                  <p><%= langBundle.getString(pageName + ".invalidModel") %></p>
                 </div>
               </div>
 
@@ -70,7 +70,7 @@
               </div>
 
               <div class="item">
-                <input type="button" value="Aggiungi variante" id="add-variant" />
+                <input type="button" value="<%= langBundle.getString(pageName + ".addVariant") %>" id="add-variant" />
               </div>
             </div>
 
@@ -79,7 +79,7 @@
 
             <div class="column">
               <div class="item">
-                <label for="images">Carica immagini</label>
+                <label for="images"><%= langBundle.getString(pageName + ".uploadImages") %></label>
                 <input type="file" id="images" multiple accept="image/*" />
                 <ul id="image-list" class="file-list"></ul>
                 <div id="hidden-image-inputs"></div>
@@ -87,7 +87,7 @@
               </div>
 
               <div class="item">
-                <input type="submit" value="Aggiungi prodotto" />
+                <input type="submit" value="<%= langBundle.getString(pageName + ".addProduct") %>" />
               </div>
             </div>
 
@@ -97,18 +97,18 @@
 
         <div class="product-list-container">
           <div class="product-list-title-header">
-            <span class="product-list-title">Catalogo prodotti</span>
+            <span class="product-list-title"><%= langBundle.getString(pageName + ".productCatalogue") %></span>
             <span class="refresh-list-span">
-              <label for="refresh-list">Aggiorna lista</label>
+              <label for="refresh-list"><%= langBundle.getString(pageName + ".updateList") %></label>
               <button id="refresh-list"></button>
             </span>
           </div>
           <div class="product-list-header">
-            <span>Brand</span>
-            <span>Modello</span>
-            <span>Descrizione</span>
-            <span>Varianti</span>
-            <span>Azioni</span>
+            <span><%= langBundle.getString(pageName + ".brand") %></span>
+            <span><%= langBundle.getString(pageName + ".model") %></span>
+            <span><%= langBundle.getString(pageName + ".description") %></span>
+            <span><%= langBundle.getString(pageName + ".variants") %></span>
+            <span><%= langBundle.getString(pageName + ".actions") %></span>
           </div>
         </div>
       </div>

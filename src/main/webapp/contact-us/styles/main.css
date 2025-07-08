@@ -4,7 +4,6 @@
     max-width: 54em;
     margin: 4em;
     padding: 2.5em;
-
     background-color: white;
     border-radius: 15px;
     box-shadow: black 1px 2px 5px 0;
@@ -112,4 +111,26 @@ input[type="submit"]:hover {
 
 .form-error > p::after {
     content: ".";
+}
+
+@media screen and (max-width: 825px) {
+    .contact-container {
+        width: 100%;
+        border-radius: 0;
+        margin: 0 0 0.5em;
+    }
+
+    select, input, textarea {
+        width: 100%;
+    }
+
+    input[type="submit"] {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 690px) {
+    .personal-informations {
+        flex-direction: column;
+    }
 }

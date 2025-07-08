@@ -307,3 +307,41 @@ input[type="color"] {
     cursor: not-allowed;
     opacity: 0.6;
 }
+
+@media (max-width: 768px) {
+    .add-product-container > form {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    input, textarea, select {
+        width: 90vw;
+        max-width: 22em;
+    }
+
+    .product-list-container {
+        min-width: auto;
+        overflow-x: auto;
+    }
+
+    .product-list-header, .product-row {
+        grid-template-columns: repeat(5, minmax(100px, 1fr));
+        font-size: 0.85em;
+    }
+
+    .variant-pill {
+        font-size: 0.75em;
+        width: fit-content;
+    }
+
+    .add-product-container, .product-list-container {
+        margin: 1em 0.5em;
+        padding: 1em;
+        width: 95%;
+        border-radius: 0;
+    }
+
+    .product-list-header {
+        width: max-content;
+    }
+}

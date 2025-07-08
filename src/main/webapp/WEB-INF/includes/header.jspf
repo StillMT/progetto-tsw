@@ -1,12 +1,28 @@
 <%@ page import="it.unisa.tsw_proj.model.bean.UserBean" %>
 <%@ page import="it.unisa.tsw_proj.model.bean.CartBean" %>
+
 <%
     final String hd = "header";
 
-    final String[] PAGES = { langBundle.getString(hd + ".home"), langBundle.getString(hd + ".catalogue"),
-            langBundle.getString(hd + ".swap"), langBundle.getString(hd + ".sell"), langBundle.getString(hd + ".aboutUs"),
-            langBundle.getString(hd + ".reviews"), langBundle.getString(hd + ".contactUs") };
-    final String[] PAGES_LINKS = { "/", "/catalogue/", "/swap/", "/sell/", "/about-us/", "/reviews/", "/contact-us/" };
+    final String[] PAGES = {
+            langBundle.getString(hd + ".home"),
+            langBundle.getString(hd + ".catalogue"),
+            langBundle.getString(hd + ".swap"),
+            langBundle.getString(hd + ".sell"),
+            langBundle.getString(hd + ".aboutUs"),
+            langBundle.getString(hd + ".reviews"),
+            langBundle.getString(hd + ".contactUs")
+    };
+
+    final String[] PAGES_LINKS = {
+            "/", "/catalogue/", "/swap/", "/sell/", "/about-us/", "/reviews/", "/contact-us/"
+    };
+
+    String uri = request.getRequestURI();
+    String logoLink = uri.equals(PAGES_LINKS[0]) ? "#" : "/";
+
+    UserBean us = (UserBean) request.getSession().getAttribute("user");
+    CartBean cart = (CartBean) request.getSession().getAttribute("cart");
 %>
 
 <header>
@@ -16,12 +32,10 @@
                 <img src="${pageContext.request.contextPath}/GeneralData/imgs/top-bar-images/wrench.svg" />
                 <%= langBundle.getString(hd + ".refurbishedBy") %>
             </span>
-
             <span>
                 <img src="${pageContext.request.contextPath}/GeneralData/imgs/top-bar-images/star.svg" />
                 <%= langBundle.getString(hd + ".aimForTop") %>
             </span>
-
             <span>
                 <img src="${pageContext.request.contextPath}/GeneralData/imgs/top-bar-images/lightning.svg" />
                 <%= langBundle.getString(hd + ".quality") %>
@@ -31,16 +45,26 @@
 
     <div class="main-bar">
         <div class="main-bar-container">
+            <div class="hamburger-wrapper">
+                <div id="hamburger-icon">
+                    <img src="${pageContext.request.contextPath}/GeneralData/imgs/menu.svg" alt="Menu" />
+                </div>
+            </div>
+
             <div>
-                <a href="${pageContext.request.contextPath}/"><img src="${pageContext.request.contextPath}/GeneralData/imgs/banner.svg" class="logo" alt="<%= langBundle.getString(hd + ".bannerAlt") %>"></a>
+                <a href="<%= logoLink %>">
+                    <img src="${pageContext.request.contextPath}/GeneralData/imgs/banner.svg" class="logo" alt="<%= langBundle.getString(hd + ".bannerAlt") %>">
+                </a>
             </div>
 
             <div>
                 <nav>
                     <% for (int i = 0; i < PAGES.length; i++) {
-                        boolean thisPage = request.getRequestURI().equals(PAGES_LINKS[i]); %>
-                        <a href="<%= thisPage ? "#" : PAGES_LINKS[i] %>" <%= thisPage ? "class=\"selected\"" : "" %>><%= PAGES[i] %></a>
-                    <%}%>
+                        boolean thisPage = uri.equals(PAGES_LINKS[i]); %>
+                    <a href="<%= thisPage ? "#" : PAGES_LINKS[i] %>" <%= thisPage ? "class=\"selected\"" : "" %>>
+                        <%= PAGES[i] %>
+                    </a>
+                    <% } %>
                 </nav>
             </div>
 
@@ -48,34 +72,61 @@
                 <div class="dropdown-menu-wrapper">
                     <a href="${pageContext.request.contextPath}/myrenovatech">
                         <img src="${pageContext.request.contextPath}/GeneralData/imgs/myrenovatech/profile.svg" class="profile-image" alt="<%= langBundle.getString(hd + ".profile") %>" />
-
-                        <%
-                            UserBean us = (UserBean) request.getSession().getAttribute("user");
-                            CartBean cart = (CartBean) request.getSession().getAttribute("cart");
-                            if (us != null) {
-                        %>
-                            <span><%= langBundle.getString(hd + ".welcome") %>, <span id="username" <%= us.isAdmin() ? "class=\"admin-user\"" : ""%>><%= us.getUsername() %></span></span>
-                            <img src="${pageContext.request.contextPath}/GeneralData/imgs/myrenovatech/dropdown-arrow.svg" />
-                        <%
-                            }
-                        %>
+                        <% if (us != null) { %>
+                        <span id="welcome-user">
+                            <%= langBundle.getString(hd + ".welcome") %>,
+                            <span id="username" <%= us.isAdmin() ? "class=\"admin-user\"" : ""%>>
+                                <%= us.getUsername() %>
+                            </span>
+                        </span>
+                        <img src="${pageContext.request.contextPath}/GeneralData/imgs/myrenovatech/dropdown-arrow.svg" />
+                        <% } %>
                     </a>
 
-                    <%
-                        if (us != null) {
-                    %>
-                        <div class="dropdown-menu">
-                            <a href="${pageContext.request.contextPath}/myrenovatech/profile"><%= langBundle.getString(hd + ".profile") %></a>
-                            <a href="${pageContext.request.contextPath}/myrenovatech/orders"><%= langBundle.getString(hd + ".orders") %></a>
-                            <a href="${pageContext.request.contextPath}/logout"><%= langBundle.getString(hd + ".logout") %></a>
-                        </div>
-                    <%
-                        }
-                    %>
+                    <% if (us != null) { %>
+                    <div class="dropdown-menu">
+                        <a href="${pageContext.request.contextPath}/myrenovatech/profile"><%= langBundle.getString(hd + ".profile") %></a>
+                        <a href="${pageContext.request.contextPath}/myrenovatech/orders"><%= langBundle.getString(hd + ".orders") %></a>
+                        <a href="${pageContext.request.contextPath}/logout"><%= langBundle.getString(hd + ".logout") %></a>
+                    </div>
+                    <% } %>
                 </div>
-                <a href="${pageContext.request.contextPath}/myrenovatech/cart" class="cart"><img src="${pageContext.request.contextPath}/GeneralData/imgs/myrenovatech/cart.svg" class="cart-image" alt="<%= langBundle.getString(hd + ".cart") %>" /></a>
+
+                <a href="${pageContext.request.contextPath}/myrenovatech/cart" class="cart">
+                    <img src="${pageContext.request.contextPath}/GeneralData/imgs/myrenovatech/cart.svg" class="cart-image" alt="<%= langBundle.getString(hd + ".cart") %>" />
+                </a>
                 <span class="cart-items-counter"><%= cart != null ? cart.getCartItemsCount() : 0 %></span>
             </div>
         </div>
     </div>
 </header>
+
+<div id="mobile-slide-overlay"></div>
+<div class="mobile-slide-menu" id="mobileMenu">
+    <div class="mobile-menu-logo-wrapper">
+        <a href="<%= logoLink %>">
+            <img src="${pageContext.request.contextPath}/GeneralData/imgs/banner.svg" class="logo" alt="<%= langBundle.getString(hd + ".bannerAlt") %>">
+        </a>
+    </div>
+
+    <% for (int i = 0; i < PAGES.length; i++) {
+        boolean thisPage = uri.equals(PAGES_LINKS[i]); %>
+    <a href="<%= thisPage ? "#" : PAGES_LINKS[i] %>" <%= thisPage ? "class=\"selected\"" : "" %>>
+        <%= PAGES[i] %>
+    </a>
+    <% } %>
+
+    <div class="mobile-menu-reserved-area">
+        <a href="${pageContext.request.contextPath}/myrenovatech">
+            <% if (us != null) { %>
+            <span><%= langBundle.getString(hd + ".welcome") %>,
+                <span id="username" <%= us.isAdmin() ? "class=\"admin-user\"" : ""%>>
+                    <%= us.getUsername() %>
+                </span>
+            </span>
+            <% } %>
+
+            <span class="underlined"><%= langBundle.getString(hd + ".reservedArea") %></span>
+        </a>
+    </div>
+</div>

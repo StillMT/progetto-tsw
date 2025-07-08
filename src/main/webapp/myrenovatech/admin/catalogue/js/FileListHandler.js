@@ -100,7 +100,7 @@ form2.addEventListener("submit", (e) => {
             hasErrors = true;
     });
 
-    if (hasErrors) {
+    if (hasErrors || !checkAllFields()) {
         e.preventDefault();
         showPopup(popUpTitle, popUpMessageFieldErrors);
         return;

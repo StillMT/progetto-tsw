@@ -25,14 +25,14 @@ document.getElementById("register").addEventListener("submit", async function (e
 
     for (const el of document.querySelectorAll(".form-error")) {
         if (el.style.display === "block") {
-            showPopup("Attenzione", "Alcuni campi sono invalidi! Controlla e riprova.");
+            showPopup(popupTitle, popupMessageInvalidFields);
             formOk = false;
             return;
         }
     }
 
     if (!countrySelected) {
-        showPopup("Attenzione", "Sei sicuro di aver selezionato il paese giusto?");
+        showPopup(popupTitle, popupMessageCountrySure);
         countrySelected = true;
         return;
     }

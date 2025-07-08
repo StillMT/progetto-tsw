@@ -4,7 +4,7 @@
 
 <% List<CategoryBean> cat = CategoryDAO.doGetAllCategories(); %>
 
-<label for="category">Categoria</label>
+<label for="category"><%= langBundle.getString(pageName + ".category") %></label>
 <select name="category" id="category">
     <% for (CategoryBean c : cat) { %>
     <option value="<%= c.getId() %>"><%= c.getName() %></option>
