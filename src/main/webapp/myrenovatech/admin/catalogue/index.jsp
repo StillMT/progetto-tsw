@@ -117,6 +117,8 @@
     </main>
 
     <script>
+      const noProductsInList = "<%= langBundle.getString(pageName + ".noProductsInList") %>";
+
       const headerTitleAdd = "<%= langBundle.getString(pageName + ".addProd") %>";
       const headerTitleEdit = "<%= langBundle.getString(pageName + ".editProd") %>";
       const headerTitleProduct = "<%= langBundle.getString(pageName + ".product") %>";

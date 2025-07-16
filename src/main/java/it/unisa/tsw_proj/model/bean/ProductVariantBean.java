@@ -17,6 +17,7 @@ public class ProductVariantBean {
     }
 
     public ProductVariantBean(String hexColor, int storage, int stock, double price) {
+        id = -1;
         color = Color.decode(hexColor);
         this.storage = storage;
         this.stock = stock;

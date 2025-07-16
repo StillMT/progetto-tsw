@@ -98,18 +98,18 @@ input[type="submit"]:hover {
     display: none;
 }
 
-.form-error > p::before {
+.form-error::before {
     content: "•";
     margin-right: 3px;
 }
 
-.form-error > p {
+.form-error {
     color: red;
     font-size: 0.75em;
     margin: 0 0 0 10px;
 }
 
-.form-error > p::after {
+.form-error::after {
     content: ".";
 }
 

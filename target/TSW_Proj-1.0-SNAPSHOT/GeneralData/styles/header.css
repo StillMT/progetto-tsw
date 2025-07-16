@@ -147,7 +147,7 @@
     }
 }
 
-@media (max-width: 970px) {
+@media (max-width: 990px) {
     .underlined {
         text-decoration: underline;
     }
@@ -211,10 +211,11 @@
     }
 
     .mobile-slide-menu {
+        overflow-y: auto;
         position: fixed;
         top: 0;
         left: 0;
-        width: 300px;
+        min-width: 300px;
         height: 100vh;
         box-sizing: border-box;
         background-color: white;
@@ -267,7 +268,7 @@
     }
 }
 
-@media (min-width: 971px) {
+@media (min-width: 991px) {
     .hamburger-wrapper, .mobile-slide-menu, #mobile-slide-overlay {
         display: none !important;
     }

@@ -39,7 +39,7 @@ public class RegisterServlet extends HttpServlet {
             return;
         }
 
-        UserBean user = new UserBean(fullName, username, BCrypt.hashpw(password, BCrypt.gensalt()), email, phone, country);
+        UserBean user = new UserBean(fullName, username, BCrypt.hashpw(password, BCrypt.gensalt()), email, phone, country.toUpperCase());
         int userId = UserDAO.doRegisterUser(user);
         if (userId > 0) {
             user.setId(userId);

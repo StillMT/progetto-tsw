@@ -2,6 +2,7 @@ package it.unisa.tsw_proj.controller;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.List;
 
 import it.unisa.tsw_proj.model.bean.ProductBean;
@@ -85,9 +86,14 @@ public class ProductsHandlerServlet extends HttpServlet {
 
                     String[] vIds = request.getParameterValues("variantId[]");
 
+                    System.out.println(Arrays.toString(vIds));
+                    System.out.println(Arrays.toString(vColors));
+                    System.out.println(Arrays.toString(vStorages));
+                    System.out.println(Arrays.toString(vPrices));
+
                     pb = new ProductBean(prodId, brand, model, description, Integer.parseInt(idCategory));
                     for (int i = 0; i < vColors.length; i++)
-                        pb.addVariant(new ProductVariantBean(Integer.parseInt(vIds[i]), prodId, vColors[i], Integer.parseInt(vStorages[i]), Integer.parseInt(vStocks[i]), Double.parseDouble(vPrices[i])));
+                        pb.addVariant(new ProductVariantBean(vIds.length > i ? Integer.parseInt(vIds[i]) : -1, prodId, vColors[i], Integer.parseInt(vStorages[i]), Integer.parseInt(vStocks[i]), Double.parseDouble(vPrices[i])));
 
                     if (!ProductDAO.doUpdateProduct(pb)) {
                         sendToCatalogue(response, "internal_error");

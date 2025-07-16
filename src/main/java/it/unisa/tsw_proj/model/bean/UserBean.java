@@ -8,6 +8,15 @@ public class UserBean {
     // Costruttori
     public UserBean() {}
 
+    public UserBean(int id, String fullName, String username, String email, UserRole role, boolean isLimited) {        // List related
+        this.id = id;
+        this.fullName = fullName;
+        this.username = username;
+        this.email = email;
+        this.role = role;
+        this.isLimited = isLimited;
+    }
+
     public UserBean(String fullName, String username, String password, String email, String phone, String nationality) {    // Register related
         this.fullName = fullName;
         this.username = username;
@@ -67,6 +76,10 @@ public class UserBean {
         return us != null && us.isAdmin();
     }
 
+    public boolean getIsLimited() {
+        return isLimited;
+    }
+
     // Metodi modificatori
     public void setId(int id) {
         this.id = id;
@@ -100,6 +113,10 @@ public class UserBean {
         this.role = role;
     }
 
+    public void setLimited(boolean limited) {
+        isLimited = limited;
+    }
+
     // Attributi
     private int id;
     private String fullName;
@@ -109,4 +126,5 @@ public class UserBean {
     private String phone;
     private String nationality;
     private UserRole role;
+    private boolean isLimited;
 }

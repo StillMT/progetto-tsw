@@ -30,6 +30,10 @@
     padding: 2em;
 }
 
+.card.admin {
+    border: 2px solid red;
+}
+
 .card > img {
     width: 70%;
 }

@@ -2,6 +2,15 @@ package it.unisa.tsw_proj.model.bean;
 
 public class AddressBean {
 
+    // Costruttori
+    public AddressBean(String street, String city, String state, String zip, String country) {
+        this.street = street;
+        this.city = city;
+        this.state = state;
+        this.zip = zip;
+        this.country = country;
+    }
+
     // Metodi di accesso
     public int getId() {
         return id;
@@ -29,6 +38,11 @@ public class AddressBean {
 
     public int getIdUser() {
         return idUser;
+    }
+
+    @Override
+    public String toString() {
+        return street + ", " + city + " " + zip + ", " + state + ", " + country;
     }
 
     // Metodi modificatori

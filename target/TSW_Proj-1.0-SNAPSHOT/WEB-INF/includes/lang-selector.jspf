@@ -9,6 +9,8 @@
     String lang = (String) s.getAttribute("lang");
     String reqLang = request.getParameter("lang");
 
+    boolean mustReloadBundle = false;
+
     if (lang == null || lang.isBlank() || (reqLang != null && !lang.equals(reqLang))) {
         lang = reqLang;
 
@@ -22,7 +24,13 @@
         }
 
         s.setAttribute("lang", lang);
+        mustReloadBundle = true;
     }
 
-    ResourceBundle langBundle = ResourceBundle.getBundle("lang.messages", Locale.forLanguageTag(lang));
+    ResourceBundle langBundle = (ResourceBundle) s.getAttribute("langBundle");
+
+    if (langBundle == null || mustReloadBundle) {
+        langBundle = ResourceBundle.getBundle("lang.messages", Locale.forLanguageTag(lang));
+        s.setAttribute("langBundle", langBundle);
+    }
 %>

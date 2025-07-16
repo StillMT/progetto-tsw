@@ -13,28 +13,28 @@
       <div class="cards-container">
         <a href="profile/">
           <div class="card">
-            <img src="/GeneralData/imgs/myrenovatech/profile.svg" />
+            <img src="${pageContext.request.contextPath}/GeneralData/imgs/myrenovatech/profile.svg" />
             <span class="card-title"><%= langBundle.getString(pageName + ".profile") %></span>
           </div>
         </a>
         <a href="orders/">
           <div class="card">
-            <img src="/GeneralData/imgs/myrenovatech/orders.svg" />
+            <img src="${pageContext.request.contextPath}/GeneralData/imgs/myrenovatech/orders.svg" />
             <span class="card-title"><%= langBundle.getString(pageName + ".orders") %></span>
           </div>
         </a>
 
         <% if (((UserBean) request.getSession().getAttribute("user")).isAdmin()) { %>
         <a href="admin/catalogue/">
-          <div class="card">
+          <div class="card admin">
             <img src="admin/imgs/catalogue.svg" />
             <span class="card-title"><%= langBundle.getString(pageName + ".catalogue") %></span>
           </div>
         </a>
         <a href="admin/customers/">
-          <div class="card">
+          <div class="card admin">
             <img src="admin/imgs/customers-orders.svg" />
-            <span class="card-title"><%= langBundle.getString(pageName + ".ordersByCustomer") %></span>
+            <span class="card-title"><%= langBundle.getString(pageName + ".customers") %></span>
           </div>
         </a>
         <% } %>

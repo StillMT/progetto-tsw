@@ -83,7 +83,3 @@ function cleanAllVariants() {
     variantIndex = 0;
     variantFields = [];
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-    addVariant();
-});

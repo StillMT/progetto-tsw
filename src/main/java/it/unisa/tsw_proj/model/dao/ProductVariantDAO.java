@@ -49,22 +49,30 @@ public class ProductVariantDAO {
         try {
             ps = con.prepareStatement(sql);
 
+            int counter = 0;
             for (ProductVariantBean pv : p.getProductVariants()) {
+                if (pv.getId() != -1)
+                    continue;
+
                 ps.setInt(1, p.getId());
                 ps.setString(2, pv.getHexColor());
                 ps.setInt(3, pv.getStorage());
                 ps.setInt(4, pv.getStock());
                 ps.setDouble(5, pv.getPrice());
                 ps.addBatch();
+
+                counter++;
             }
 
-            int[] batchResult = ps.executeBatch();
-            result = true;
-            for (int r : batchResult)
-                if (r < 1) {
-                    result = false;
-                    break;
-                }
+            if (counter > 0) {
+                int[] batchResult = ps.executeBatch();
+                result = true;
+                for (int r : batchResult)
+                    if (r < 1) {
+                        result = false;
+                        break;
+                    }
+            }
         } catch (SQLException e) {
             DriverManagerConnectionPool.logSqlError(e, logger);
         } finally {
@@ -94,22 +102,33 @@ public class ProductVariantDAO {
             sql = "UPDATE product_variant SET color = ?, storage = ?, stock = ?, price = ? WHERE id = ?";
             ps = con.prepareStatement(sql);
 
+            int counter = 0;
             for (ProductVariantBean pv : pvs) {
+                if (pv.getId() == -1)
+                    continue;
+
                 ps.setString(1, pv.getHexColor());
                 ps.setInt(2, pv.getStorage());
                 ps.setInt(3, pv.getStock());
                 ps.setDouble(4, pv.getPrice());
                 ps.setInt(5, pv.getId());
                 ps.addBatch();
+
+                counter++;
             }
 
-            int[] batchResult = ps.executeBatch();
-            result = true;
-            for (int res : batchResult)
-                if (res < 1) {
-                    result = false;
-                    break;
-                }
+            if (counter > 0) {
+                int[] batchResult = ps.executeBatch();
+                result = true;
+                for (int res : batchResult)
+                    if (res < 1) {
+                        result = false;
+                        break;
+                    }
+            }
+
+            if (result)
+                result = doInsertVariantBatch(p, con);
         } catch (SQLException e) {
             DriverManagerConnectionPool.logSqlError(e, logger);
         } finally {

@@ -1,5 +1,14 @@
 const actionType = document.getElementById("action");
 
+const noEls = document.createElement("div");
+noEls.id = "no-products-message";
+noEls.textContent = noProductsInList;
+
+document.addEventListener("DOMContentLoaded", () => {
+    addVariant();
+    document.querySelector(".product-list-container").appendChild(noEls);
+});
+
 document.getElementById("refresh-list").addEventListener("click", async function () {
     function getTextColor(bgColor) {
         const r = parseInt(bgColor.slice(1, 3), 16);
@@ -24,7 +33,14 @@ document.getElementById("refresh-list").addEventListener("click", async function
         const container = document.querySelector(".product-list-container");
         container.querySelectorAll(".product-row").forEach(el => el.remove());
 
+        const divNoEls = container.querySelector("#no-products-message");
+        if (divNoEls)
+            divNoEls.remove();
+
+        let count = 0;
         products.products.forEach(p => {
+            count++;
+
             const variantHTML = p.variants.map(v => `
                 <div class="variant-pill" style="background-color: ${v.color}; color: ${getTextColor(v.color)}">
                     ${v.storage} GB – ${v.stock} pz. – €${v.price.toFixed(2)}
@@ -60,6 +76,8 @@ document.getElementById("refresh-list").addEventListener("click", async function
             row.querySelector(".del-btn").addEventListener("click", el => handleDelete(el.currentTarget));
         });
 
+        if (count === 0)
+            container.appendChild(noEls);
     } catch (err) {
         console.error("AJAX error:", err);
     }

@@ -1,17 +1,209 @@
-#customers-list {
+.main-cont {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1em;
     padding: 1em;
+}
+
+.list {
     background-color: white;
     border-radius: 25px;
     box-shadow: black 1px 2px 5px 0;
     display: flex;
     flex-direction: column;
+    gap: 0.5em;
+    overflow-y: auto;
+    height: 45em;
+    width: 100%;
 }
 
 .list-header {
+    padding: 1em 1em 0.5em;
+    position: sticky;
+    background-color: white;
+    top: 0;
+    z-index: 10;
+    width: 100%;
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 5px #00000019;
+    box-sizing: border-box;
+}
+
+.list-header h2 {
+    margin: 0;
+}
+
+.list-header input#search-input {
+    padding: 0.5em;
+    outline: none;
+    border: 1px solid black;
+    border-radius: 10px;
+    font-family: "Poppins", sans-serif;
+    width: min(20em, 100%);
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.actual-list {
+    padding: 0 1em 1em;
+}
+
+.actual-list-header {
+    font-weight: 700;
+    background-color: #C7C7C7;
+    border-radius: 5px;
+}
+
+.actual-list-header, .row {
+    display: grid;
+    column-gap: 1em;
+    align-items: center;
+    padding: 0.8em;
+    border-bottom: 1px solid #ccc;
+}
+
+.row {
+    font-size: 0.8em;
+}
+
+#customers-list .row, #customers-list .actual-list-header {
+    grid-template-columns: 0.1fr 0.7fr 0.6fr 1.2fr 0.2fr 0.5fr;
+}
+
+#orders-list .row, #orders-list .actual-list-header {
+    grid-template-columns: 0.5fr 0.3fr 0.5fr 2fr 0.5fr 0.4fr;
+}
+
+.row span:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2em;
+}
+
+#orders-list .row span:last-child button.view-order, .row span:last-child button.cancel-order {
+    width: 100%;
+}
+
+.row .limit-user-wrapper, .row .cancel-order-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.row .limit-user-wrapper.active, .row .cancel-order-wrapper.active {
+    flex-direction: row;
     justify-content: space-between;
 }
 
-h2 {
-    margin: 0;
+.row .cancel-order-wrapper.active button.cancel-order {
+    width: auto;
+}
+
+.row .view-order, .row .limit-user, .row .cancel-order {
+    padding: 0.3em;
+    background-color: #6d76d7;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    transition: 0.2s ease;
+}
+
+.row .limit-user, .row .cancel-order {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+.row .view-order:hover, .row .limit-user:hover, .row .cancel-order:hover {
+    background-color: #5361c3;
+}
+
+.row .view-order:disabled, .row .limit-user:disabled, .row .cancel-order:disabled {
+    background-color: #a0adff;
+    cursor: not-allowed;
+}
+
+.no-products-message {
+    text-align: center;
+    color: #666;
+    font-size: 1em;
+    margin: 2em auto;
+    padding: 1em;
+    background-color: #f8f8f8;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    max-width: 30em;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+#active-view {
+    display: none;
+}
+
+.refresh-list-span {
+    display: flex;
+    align-items: center;
+    gap: 0.2em;
+}
+
+#cust-refresh-list {
+    width: 2em;
+    height: 2em;
+    padding: 0;
+    background-image: url("../../imgs/refresh.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 60%;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: #f8f8f8;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#cust-refresh-list:hover {
+    background-color: #e0e0e0;
+}
+
+.remove-btn {
+    display: none;
+    width: 1.5em;
+    height: 1.5em;
+    background-image: url("../../imgs/cross.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 80%;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+@media (max-width: 1400px) {
+    .main-cont {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 990px) {
+    .main-cont {
+        padding: 0;
+    }
+
+    .list {
+        border-radius: 0;
+    }
+}
+
+@media (max-width: 800px) {
+    .actual-list-header, .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5em;
+        padding: 1em 0;
+    }
 }
