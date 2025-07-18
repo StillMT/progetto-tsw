@@ -49,10 +49,10 @@
 
                 <h2>Login</h2>
                 <form action="${pageContext.request.contextPath}/login" method="post">
-                    <div class="div-label"><label for="username">Username</label></div>
+                    <div class="div-label"><label for="username"><%= langBundle.getString(pageName + ".username") %></label></div>
                     <input type="text" name="username" id="user" required />
 
-                    <div class="div-label"><label for="pass">Password</label></div>
+                    <div class="div-label"><label for="pass"><%= langBundle.getString(pageName + ".password") %></label></div>
                     <input type="password" name="pass" id="pass" required />
 
                     <p class="toggle-paragraph"><%= langBundle.getString(pageName + ".notRegistered") %> <span class="pointer" onclick="formToggle()"><%= langBundle.getString(pageName + ".register") %></span></p>
@@ -80,7 +80,7 @@
                         <p><%= langBundle.getString(pageName + ".maximum50Characters") %></p>
                     </div>
 
-                    <div class="div-label"><label for="username">Username</label><span class="required"></span></div>
+                    <div class="div-label"><label for="username"><%= langBundle.getString(pageName + ".username") %></label><span class="required"></span></div>
                     <input type="text" name="username" id="username" minlength="3" maxlength="16" required />
                     <div class="form-error" id="usernameAlreadyExistError">
                         <p><%= langBundle.getString(pageName + ".thisUsernameIsNotAvailable") %></p>
@@ -90,7 +90,7 @@
                         <p><%= langBundle.getString(pageName + ".onlyLettersNumbersHyphensAndUnderscoresAllowed") %></p>
                     </div>
 
-                    <div class="div-label"><label for="password">Password</label><span class="required"></span></div>
+                    <div class="div-label"><label for="password"><%= langBundle.getString(pageName + ".password") %></label><span class="required"></span></div>
                     <input type="password" name="pass" minlength="8" maxlength="20" id="password" required />
                     <div class="form-error" id="passwordError">
                         <p><%= langBundle.getString(pageName + ".maximum20CharactersAtLeastOneSpecialCharacter") %></p>
@@ -103,7 +103,7 @@
                         <p><%= langBundle.getString(pageName + ".theTwoPasswordsMustMatch") %></p>
                     </div>
 
-                    <div class="div-label"><label for="email">Email</label><span class="required"></span></div>
+                    <div class="div-label"><label for="email"><%= langBundle.getString(pageName + ".email") %></label><span class="required"></span></div>
                     <input type="email" name="email" maxlength="254" id="email" required />
                     <div class="form-error" id="emailAlreadyExistError">
                         <p><%= langBundle.getString(pageName + ".anAccountHasAlreadyBeenCreatedWithThisEmailAddress") %></p>

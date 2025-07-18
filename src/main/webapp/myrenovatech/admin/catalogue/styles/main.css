@@ -104,6 +104,17 @@ input, textarea, select {
     border-top: 1px dashed #ccc;
     padding-top: 1em;
     gap: 0.5em;
+    width: 20em;
+}
+
+.variant-inputs span {
+    display: inline-flex;
+    gap: 0.3em;
+    align-items: center;
+}
+
+#add-variant-column .item input {
+    width: 100%;
 }
 
 #add-variant-column .item.first {

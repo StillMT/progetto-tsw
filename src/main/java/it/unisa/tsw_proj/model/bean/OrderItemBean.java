@@ -3,9 +3,7 @@ package it.unisa.tsw_proj.model.bean;
 public class OrderItemBean {
 
     // Costruttore
-    public OrderItemBean(int id, int orderId, ProductBean product, double price, int qt) {
-        this.id = id;
-        this.orderId = orderId;
+    public OrderItemBean(ProductBean product, double price, int qt) {
         this.product = product;
         this.price = price;
         this.qt = qt;
@@ -30,6 +28,10 @@ public class OrderItemBean {
 
     public int getQt() {
         return qt;
+    }
+
+    public double getTotal() {
+        return price * qt;
     }
 
     // Metodi modificatori

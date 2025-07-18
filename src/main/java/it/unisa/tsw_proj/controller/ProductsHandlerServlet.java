@@ -2,7 +2,7 @@ package it.unisa.tsw_proj.controller;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Arrays;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import it.unisa.tsw_proj.model.bean.ProductBean;
@@ -59,6 +59,9 @@ public class ProductsHandlerServlet extends HttpServlet {
                 String[] vStorages = request.getParameterValues("variantStorage[]");
                 String[] vStocks = request.getParameterValues("variantStock[]");
                 String[] vPrices = request.getParameterValues("variantPrice[]");
+                String[] vSalePercentages = request.getParameterValues("variantSalePercentage[]");
+                String[] vSalePrices = request.getParameterValues("variantSalePrice[]");
+                String[] vSaleExpDates = request.getParameterValues("variantSaleDate[]");
 
                 if (!checkParams(brand, model, description, idCategory, vColors, vStorages, vStocks, vPrices)) {
                     sendToCatalogue(response, "invalid_field");
@@ -69,7 +72,9 @@ public class ProductsHandlerServlet extends HttpServlet {
                 if ("add".equals(action)) {
                     pb = new ProductBean(brand, model, description, Integer.parseInt(idCategory));
                     for (int i = 0; i < vColors.length; i++)
-                        pb.addVariant(new ProductVariantBean(vColors[i], Integer.parseInt(vStorages[i]), Integer.parseInt(vStocks[i]), Double.parseDouble(vPrices[i])));
+                        pb.addVariant(new ProductVariantBean(vColors[i], Integer.parseInt(vStorages[i]), Integer.parseInt(vStocks[i]),
+                                Double.parseDouble(vPrices[i]), Integer.parseInt(vSalePercentages[i]), Double.parseDouble(vSalePrices[i]),
+                                LocalDateTime.parse(vSaleExpDates[i])));
 
                     prodId = ProductDAO.doInsertProduct(pb);
                     if (prodId < 0) {
@@ -86,14 +91,16 @@ public class ProductsHandlerServlet extends HttpServlet {
 
                     String[] vIds = request.getParameterValues("variantId[]");
 
-                    System.out.println(Arrays.toString(vIds));
-                    System.out.println(Arrays.toString(vColors));
-                    System.out.println(Arrays.toString(vStorages));
-                    System.out.println(Arrays.toString(vPrices));
-
-                    pb = new ProductBean(prodId, brand, model, description, Integer.parseInt(idCategory));
-                    for (int i = 0; i < vColors.length; i++)
-                        pb.addVariant(new ProductVariantBean(vIds.length > i ? Integer.parseInt(vIds[i]) : -1, prodId, vColors[i], Integer.parseInt(vStorages[i]), Integer.parseInt(vStocks[i]), Double.parseDouble(vPrices[i])));
+                    try {
+                        pb = new ProductBean(prodId, brand, model, description, Integer.parseInt(idCategory));
+                        for (int i = 0; i < vColors.length; i++)
+                            pb.addVariant(new ProductVariantBean(vIds.length > i ? Integer.parseInt(vIds[i]) : -1, prodId,
+                                    vColors[i], Integer.parseInt(vStorages[i]), Integer.parseInt(vStocks[i]), Double.parseDouble(vPrices[i]),
+                                    Integer.parseInt(vSalePercentages[i]), Double.parseDouble(vSalePrices[i]), LocalDateTime.parse(vSaleExpDates[i])));
+                    } catch (NumberFormatException _) {
+                        sendToCatalogue(response, "internal_error");
+                        return;
+                    }
 
                     if (!ProductDAO.doUpdateProduct(pb)) {
                         sendToCatalogue(response, "internal_error");
@@ -126,7 +133,10 @@ public class ProductsHandlerServlet extends HttpServlet {
                     .put("color", v.getHexColor())
                     .put("storage", v.getStorage())
                     .put("stock", v.getStock())
-                    .put("price", v.getPrice());
+                    .put("price", v.getPrice())
+                    .put("salePrice", v.getSalePrice())
+                    .put("salePercentage", v.getSalePercentage())
+                    .put("saleExpireDate", v.getSaleExpireDate());
 
             jsonArray.put(variantJson);
         }

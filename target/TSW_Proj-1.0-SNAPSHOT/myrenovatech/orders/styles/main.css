@@ -62,6 +62,12 @@
     font-size: 0.8em;
 }
 
+.row span:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2em;
+}
+
 .row button {
     padding: 0.3em;
     background-color: #6d76d7;

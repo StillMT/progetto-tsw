@@ -117,6 +117,14 @@
     </main>
 
     <script>
+      const colorLabel = "Colore";
+      const storageLabel = "Storage";
+      const stockLabel = "Stock";
+      const priceLabel = "Prezzo";
+      const salePercLabel = "Perc. sconto";
+      const salePriceLabel = "Prez. sconto";
+      const saleExpDateLabel = "Scandenza sconto";
+
       const noProductsInList = "<%= langBundle.getString(pageName + ".noProductsInList") %>";
 
       const headerTitleAdd = "<%= langBundle.getString(pageName + ".addProd") %>";
@@ -135,6 +143,8 @@
       const storageError = "<%= langBundle.getString(pageName + ".storageError") %>";
       const stockError = "<%= langBundle.getString(pageName + ".stockError") %>";
       const priceError = "<%= langBundle.getString(pageName + ".priceError") %>";
+      const percError = "Perc";
+      const dateError = "Data";
     </script>
     <script src="js/FormChecker.js"></script>
     <script src="js/AddVariantHandler.js"></script>

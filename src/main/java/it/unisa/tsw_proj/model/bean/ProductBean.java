@@ -23,6 +23,13 @@ public class ProductBean {
         this.idCategory = idCategory;
     }
 
+    public ProductBean(int id, String brand, String model, ProductVariantBean pv) {
+        this.id = id;
+        this.brand = brand;
+        this.model = model;
+        addVariant(pv);
+    }
+
     // Metodi di accesso
     public int getId() {
         return id;

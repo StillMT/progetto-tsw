@@ -5,7 +5,6 @@ const hiddenKeptInputs = document.getElementById("hidden-kept-images");
 const form2 = fileInput.closest("form");
 
 const MAX_IMAGES = 6;
-
 let selectedFiles = [];
 let keptOldImages = [];
 
@@ -15,7 +14,6 @@ fileInput.addEventListener("change", (e) => {
 
     if (total > MAX_IMAGES) {
         showPopup(popUpTitle, popUpMessageImageLimit);
-
         fileInput.value = "";
         return;
     }
@@ -29,40 +27,29 @@ function updateFileList() {
     imageList.innerHTML = "";
 
     keptOldImages.forEach((fileName, index) => {
-        const li = document.createElement("li");
-        li.className = "file-item";
-
-        const span = document.createElement("span");
-        span.className = "file-name";
-        span.textContent = fileName;
-
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "remove-btn";
-        button.addEventListener("click", () => removeOldImage(index));
-
-        li.appendChild(span);
-        li.appendChild(button);
+        const li = createListItem(fileName, () => removeOldImage(index));
         imageList.appendChild(li);
     });
 
     selectedFiles.forEach((file, index) => {
-        const li = document.createElement("li");
-        li.className = "file-item";
-
-        const span = document.createElement("span");
-        span.className = "file-name";
-        span.textContent = file.name;
-
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "remove-btn";
-        button.addEventListener("click", () => removeSelectedFile(index));
-
-        li.appendChild(span);
-        li.appendChild(button);
+        const li = createListItem(file.name, () => removeSelectedFile(index));
         imageList.appendChild(li);
     });
+}
+
+function createListItem(fileName, onRemove) {
+    const li = document.createElement("li");
+    li.className = "file-item";
+    const span = document.createElement("span");
+    span.className = "file-name";
+    span.textContent = fileName;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "remove-btn";
+    button.addEventListener("click", onRemove);
+    li.appendChild(span);
+    li.appendChild(button);
+    return li;
 }
 
 function removeOldImage(index) {
@@ -95,9 +82,8 @@ function cleanFileList() {
 
 form2.addEventListener("submit", (e) => {
     let hasErrors = false;
-    document.querySelectorAll(".form-error").forEach(e => {
-        if (e.style.display === "block")
-            hasErrors = true;
+    document.querySelectorAll(".form-error").forEach(el => {
+        if (el.style.display === "block") hasErrors = true;
     });
 
     if (hasErrors || !checkAllFields()) {

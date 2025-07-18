@@ -43,13 +43,18 @@ public class ProductFileServlet extends HttpServlet {
         if (remainingSlots <= 0)
             return;
 
+        int nextIndex = keptSet.size() + 1;
+
         for (Part part : request.getParts()) {
             if ("uploadedImages[]".equals(part.getName()) && part.getSize() > 0 && remainingSlots > 0) {
-                String filename = Paths.get(part.getSubmittedFileName()).getFileName().toString();
-                if (filename.contains("..") || filename.contains("/") || filename.contains("\\"))
+                String submittedFileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+                String ext = getFileExtension(submittedFileName);
+                if (submittedFileName.contains("..") || submittedFileName.contains("/") || submittedFileName.contains("\\"))
                     continue;
-                File dest = new File(productDir, filename);
+
+                File dest = new File(productDir, nextIndex + ext.toLowerCase());
                 part.write(dest.getAbsolutePath());
+                nextIndex++;
                 remainingSlots--;
             }
         }
@@ -62,6 +67,8 @@ public class ProductFileServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
             return;
         }
+
+        final String[] EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"};
 
         final String FALLBACK_IMAGE = "no_image_fallback.png";
         final String requestedPath = request.getPathInfo();
@@ -90,13 +97,27 @@ public class ProductFileServlet extends HttpServlet {
             return;
         }
 
-        File file;
+        File file = null;
         File baseDir = new File(FINAL_PATH).getCanonicalFile();
-        if (requestedPath == null || requestedPath.contains("..") || requestedPath.endsWith("/")) {
+
+        if (requestedPath == null || requestedPath.contains("..")) {
             file = new File(FINAL_PATH, FALLBACK_IMAGE);
         } else {
-            file = new File(FINAL_PATH, requestedPath).getCanonicalFile();
-            if (!file.getPath().startsWith(baseDir.getPath()) || !file.exists() || !file.isFile())
+            String[] parts = requestedPath.substring(1).split("/"); // remove leading slash
+            if (parts.length == 2) {
+                String productId = parts[0];
+                String imageName = parts[1];
+                File productDir = new File(FINAL_PATH, productId);
+
+                for (String ext : EXTENSIONS) {
+                    File candidate = new File(productDir, imageName + ext);
+                    if (candidate.exists() && candidate.isFile()) {
+                        file = candidate.getCanonicalFile();
+                        break;
+                    }
+                }
+            }
+            if (file == null || !file.getPath().startsWith(baseDir.getPath()))
                 file = new File(FINAL_PATH, FALLBACK_IMAGE);
         }
 
@@ -123,15 +144,38 @@ public class ProductFileServlet extends HttpServlet {
 
     private Set<String> cleanUnkeptImages(File productDir, String[] keptImages) {
         Set<String> keptSet = keptImages != null ? new HashSet<>(Arrays.asList(keptImages)) : new HashSet<>();
+
         if (!productDir.exists())
             productDir.mkdirs();
         else {
             File[] files = productDir.listFiles();
-            if (files != null)
-                for (File f : files)
+            if (files != null) {
+                for (File f : files) {
                     if (!keptSet.contains(f.getName()))
                         f.delete();
+                }
+
+                File[] remainingFiles = productDir.listFiles((dir, name) -> new File(dir, name).isFile());
+                if (remainingFiles != null) {
+                    Arrays.sort(remainingFiles);
+                    for (int i = 0; i < remainingFiles.length; i++) {
+                        File oldFile = remainingFiles[i];
+                        String ext = getFileExtension(oldFile.getName());
+                        File newFile = new File(productDir, (i + 1) + ext);
+                        if (!oldFile.equals(newFile)) {
+                            oldFile.renameTo(newFile);
+                        }
+                        keptSet.add(newFile.getName());
+                    }
+                }
+            }
         }
+
         return keptSet;
+    }
+
+    private String getFileExtension(String filename) {
+        int index = filename.lastIndexOf(".");
+        return (index >= 0) ? filename.substring(index) : "";
     }
 }

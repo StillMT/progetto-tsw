@@ -64,7 +64,7 @@
         <span><a href="#"><%= langBundle.getString(ft + ".termsAndConditions") %></a></span>
     </div>
 
-    <script src="${pageContext.request.contextPath}/GeneralData/js/FooterLangHandler.js"></script>
+    <script src="${pageContext.request.contextPath}/GeneralData/js/FooterHandler.js"></script>
 </footer>
 
 <script src="${pageContext.request.contextPath}/GeneralData/js/HeaderNavBarHandler.js"></script>

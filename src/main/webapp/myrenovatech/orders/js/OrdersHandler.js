@@ -52,7 +52,7 @@
             <span>${el.address}</span>
             <span>${orderState[el.order_state]}</span>
             <span>
-                <a href="#?nr=${el.nr}" target="_blank"><button class="view-order">${viewOrder}</button></a>
+                <a href="view?nr=${el.nr}"><button class="view-order">${viewOrder}</button></a>
                 ${el.tracking ? `<a href="https://t.17track.net/${lang}#nums=${el.tracking}" target="_blank"><button class="view-order">${trackOrder}</button></a>` : ""}
             </span>
         `;

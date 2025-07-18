@@ -16,3 +16,4 @@ public enum UserRole {
         return this == UserRole.ADMIN;
     }
 }
+

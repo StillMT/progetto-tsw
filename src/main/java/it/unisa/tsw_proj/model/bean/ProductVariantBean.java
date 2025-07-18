@@ -1,6 +1,7 @@
 package it.unisa.tsw_proj.model.bean;
 
 import java.awt.*;
+import java.time.LocalDateTime;
 
 public class ProductVariantBean {
 
@@ -16,12 +17,30 @@ public class ProductVariantBean {
         this.price = price;
     }
 
-    public ProductVariantBean(String hexColor, int storage, int stock, double price) {
+    public ProductVariantBean(int id, int idProduct, String hexColor, int storage, int stock, double price, int salePercentage, double salePrice, LocalDateTime saleExpireDate) {
+        this.id = id;
+        this.idProduct = idProduct;
+        color = Color.decode(hexColor);
+        this.storage = storage;
+        this.stock = stock;
+        this.price = price;
+        this.salePrice = salePrice;
+        this.salePercentage = salePercentage;
+        this.saleExpireDate = saleExpireDate;
+    }
+
+    public ProductVariantBean(String hexColor, int storage, int stock, double price, int salePercentage, double salePrice, LocalDateTime saleExpireDate) {
         id = -1;
         color = Color.decode(hexColor);
         this.storage = storage;
         this.stock = stock;
         this.price = price;
+    }
+
+    public ProductVariantBean(int id, String hexColor, int storage) {
+        this.id = id;
+        color = Color.decode(hexColor);
+        this.storage = storage;
     }
 
     // Metodi di accesso
@@ -47,6 +66,18 @@ public class ProductVariantBean {
 
     public double getPrice() {
         return price;
+    }
+
+    public int getSalePercentage() {
+        return salePercentage;
+    }
+
+    public double getSalePrice() {
+        return salePrice;
+    }
+
+    public LocalDateTime getSaleExpireDate() {
+        return saleExpireDate;
     }
 
     // Metodi modificatori
@@ -81,4 +112,7 @@ public class ProductVariantBean {
     private int storage;
     private int stock;
     private double price;
+    private int salePercentage;
+    private double salePrice;
+    private LocalDateTime saleExpireDate;
 }

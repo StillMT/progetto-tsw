@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 @WebServlet(urlPatterns = {"/myrenovatech/admin/customers/customerServlet", "/myrenovatech/orders/orderServlet"})
-public class CustomerServlet extends HttpServlet {
+public class CustomerOrderServlet extends HttpServlet {
 
     final String RESULT_FALSE = "{\"result\":false}";
 
@@ -70,33 +70,46 @@ public class CustomerServlet extends HttpServlet {
                     break;
 
                 case "cancelOrder":
-                    cancelOrder(request.getParameter("orderNr"), w, true, null);
+                    String nr = request.getParameter("orderNr");
+
+                    if (nr != null)
+                        w.write("{\"result\":" + OrderDAO.doCancelOrder(nr, -1) + "}");
+                    else
+                        w.write(RESULT_FALSE);
                     break;
 
                 default:
                     w.write(RESULT_FALSE);
                     break;
             }
-        else
+        else {
+            UserBean u = (UserBean) request.getSession().getAttribute("user");
+            String redirectUrl = "/myrenovatech/orders/view/";
+
             switch (action) {
                 case "getOrders":
-                    UserBean u = (UserBean) request.getSession().getAttribute("user");
-                    if (u == null) {
-                        w.write(RESULT_FALSE);
-                        return;
-                    }
-
                     getOrders(null, w, false, u.getId());
                     break;
 
                 case "cancelOrder":
-                    cancelOrder(request.getParameter("orderNr"), w, false, request.getParameter("userId"));
+                    String nr = request.getParameter("orderNr");
+                    if (nr == null) {
+                        response.sendRedirect(redirectUrl);
+                        return;
+                    }
+
+                    redirectUrl += "?nr=" + nr;
+                    if (!OrderDAO.doCancelOrder(nr, (!u.isAdmin() ? u.getId() : -1)))
+                        redirectUrl += "&error=cancel_failed";
+
+                    response.sendRedirect(redirectUrl);
                     break;
 
                 default:
-                    w.write(RESULT_FALSE);
+                    response.sendRedirect(redirectUrl);
                     break;
             }
+        }
     }
 
     @Override
@@ -126,21 +139,5 @@ public class CustomerServlet extends HttpServlet {
             or.put(obj);
         }
         w.write(or.toString());
-    }
-
-    private void cancelOrder(String nr, Writer w, boolean isAdmin, String idUser) throws IOException {
-        int id = -1;
-
-        if (!isAdmin)
-            try {
-                id = Integer.parseInt(idUser);
-            } catch (NumberFormatException _) {
-                return;
-            }
-
-        if (nr != null)
-            w.write("{\"result\":" + OrderDAO.doCancelOrder(nr, id) + "}");
-        else
-            w.write(RESULT_FALSE);
     }
 }

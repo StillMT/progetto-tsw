@@ -99,34 +99,34 @@
             </div>
         </div>
     </div>
-</header>
 
-<div id="mobile-slide-overlay"></div>
-<div class="mobile-slide-menu" id="mobileMenu">
-    <div class="mobile-menu-logo-wrapper">
-        <a href="<%= logoLink %>">
-            <img src="${pageContext.request.contextPath}/GeneralData/imgs/banner.svg" class="logo" alt="<%= langBundle.getString(hd + ".bannerAlt") %>">
+    <div id="mobile-slide-overlay"></div>
+    <div class="mobile-slide-menu" id="mobileMenu">
+        <div class="mobile-menu-logo-wrapper">
+            <a href="<%= logoLink %>">
+                <img src="${pageContext.request.contextPath}/GeneralData/imgs/banner.svg" class="logo" alt="<%= langBundle.getString(hd + ".bannerAlt") %>">
+            </a>
+        </div>
+
+        <% for (int i = 0; i < PAGES.length; i++) {
+            boolean thisPage = uri.equals(PAGES_LINKS[i]); %>
+        <a href="<%= thisPage ? "#" : PAGES_LINKS[i] %>" <%= thisPage ? "class=\"selected\"" : "" %>>
+            <%= PAGES[i] %>
         </a>
-    </div>
+        <% } %>
 
-    <% for (int i = 0; i < PAGES.length; i++) {
-        boolean thisPage = uri.equals(PAGES_LINKS[i]); %>
-    <a href="<%= thisPage ? "#" : PAGES_LINKS[i] %>" <%= thisPage ? "class=\"selected\"" : "" %>>
-        <%= PAGES[i] %>
-    </a>
-    <% } %>
-
-    <div class="mobile-menu-reserved-area">
-        <a href="${pageContext.request.contextPath}/myrenovatech">
-            <% if (us != null) { %>
-            <span><%= langBundle.getString(hd + ".welcome") %>,
+        <div class="mobile-menu-reserved-area">
+            <a href="${pageContext.request.contextPath}/myrenovatech">
+                <% if (us != null) { %>
+                <span><%= langBundle.getString(hd + ".welcome") %>,
                 <span id="username" <%= us.isAdmin() ? "class=\"admin-user\"" : ""%>>
                     <%= us.getUsername() %>
                 </span>
             </span>
-            <% } %>
+                <% } %>
 
-            <span class="underlined"><%= langBundle.getString(hd + ".reservedArea") %></span>
-        </a>
+                <span class="underlined"><%= langBundle.getString(hd + ".reservedArea") %></span>
+            </a>
+        </div>
     </div>
-</div>
+</header>

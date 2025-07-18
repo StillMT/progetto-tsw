@@ -8,7 +8,7 @@ public class AddressBean {
         this.city = city;
         this.state = state;
         this.zip = zip;
-        this.country = country;
+        this.country = country.toUpperCase();
     }
 
     // Metodi di accesso

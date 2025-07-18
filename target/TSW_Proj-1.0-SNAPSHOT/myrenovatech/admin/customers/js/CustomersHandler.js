@@ -82,7 +82,7 @@ function addOrderRow(nr, date, total, address, state, tracking) {
             <span>${address}</span>
             <span>${state}</span>
             <span>
-                <a href="#?nr=${nr}" target="_blank"><button class="view-order">${viewOrderButton}</button></a>
+                <a href="/myrenovatech/orders/view?nr=${nr}" target="_blank"><button class="view-order">${viewOrderButton}</button></a>
                 ${tracking ? `<a href="https://t.17track.net/${lang}#nums=${tracking}" target="_blank"><button class="view-order">${trackOrder}</button></a>` : ""}
                 ${state === orderState.TO_SHIP || state === orderState.SHIPPED ? `<div class="cancel-order-wrapper">
                     <button class="cancel-order" data-nr="${nr}">${cancelOrder}</button>

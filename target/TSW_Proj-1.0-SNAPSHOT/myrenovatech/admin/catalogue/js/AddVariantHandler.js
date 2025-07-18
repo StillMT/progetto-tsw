@@ -1,18 +1,20 @@
 const container = document.getElementById("add-variant-column");
 let variantIndex = 0;
 
+function addValue(value) {
+    return `value="${value}"`;
+}
+
 document.getElementById("add-variant").addEventListener("click", () => addVariant());
 
-function addVariant(id, color, storage, stock, price) {
-    function addValue(value) {
-        return `value="${value}"`;
+function addVariant(id, color, storage, stock, price, salePrice, salePercentage, saleExpireDate) {
+    function createInputSpan(label, type, name, className, placeholder, attributes = "") {
+        return `<span>${label}<input type="${type}" name="${name}" class="${className}" placeholder="${placeholder}" ${attributes}/></span>`;
     }
 
     const wrapper = document.createElement("div");
     wrapper.classList.add("item");
-    if (variantIndex === 0)
-        wrapper.classList.add("first");
-
+    if (variantIndex === 0) wrapper.classList.add("first");
     variantIndex++;
 
     wrapper.innerHTML = `
@@ -21,60 +23,64 @@ function addVariant(id, color, storage, stock, price) {
             <button type="button" class="remove-btn"></button>
         </div>
         <div class="variant-inputs">
-            <input type="color" name="variantColor[]" ${color ? addValue(color) : ''} />
-            <input type="number" id="storage-${variantIndex}" name="variantStorage[]" placeholder="128 GB" min="1" ${storage ? addValue(storage) : ''} />
-            <div class="form-error" id="error-storage-${variantIndex}">
-                <p>${storageError}</p>
-            </div>
-            
-            <input type="number" id="stock-${variantIndex}" name="variantStock[]" placeholder="10 pz" min="1" ${stock ? addValue(stock) : ''} />
-            <div class="form-error" id="error-stock-${variantIndex}">
-                <p>${stockError}</p>
-            </div>
-            
-            <input type="number" id="price-${variantIndex}" name="variantPrice[]" placeholder="999,99€" step="0.01" min="0.01" ${price ? addValue(price) : ''} />
-            <div class="form-error" id="error-price-${variantIndex}">
-                <p>${priceError}</p>
-            </div>
-            
-            ${id ? `<input type="hidden" name="variantId[]" value="${id}" />` : ''}
+            ${createInputSpan(colorLabel, "color", "variantColor[]", "", "", color ? addValue(color) : "")}
+            ${createInputSpan(storageLabel, "number", "variantStorage[]", "storage", "128 GB", storage !== null ? addValue(storage) : "min=1")}
+            <div class="form-error error-storage"><p>${storageError}</p></div>
+            ${createInputSpan(stockLabel, "number", "variantStock[]", "stock", "10 pz", stock !== null ? addValue(stock) : "min=1")}
+            <div class="form-error error-stock"><p>${stockError}</p></div>
+            ${createInputSpan(priceLabel, "number", "variantPrice[]", "price", "999,99€", price !== null ? addValue(price) : "step=0.01 min=0.01")}
+            <div class="form-error error-price"><p>${priceError}</p></div>
+            ${createInputSpan(salePercLabel, "number", "variantSalePercentage[]", "sale-percentage", "20%", salePercentage !== null ? addValue(salePercentage) : "step=1 min=0 max=100")}
+            <div class="form-error error-sale-perc"><p>${percError}</p></div>
+            ${createInputSpan(salePriceLabel, "number", "variantSalePrice[]", "sale-price", "999,99€", salePrice !== null ? addValue(salePrice) : "step=0.01 min=0.01")}
+            <div class="form-error error-sale-price"><p>${priceError}</p></div>
+            ${createInputSpan(saleExpDateLabel, "datetime-local", "variantSaleDate[]", "sale-date", "", saleExpireDate !== null ? addValue(saleExpireDate) : "")}
+            <div class="form-error error-sale-date"><p>${dateError}</p></div>
+            ${id ? `<input type="hidden" name="variantId[]" value="${id}" />` : ""}
         </div>
     `;
 
     wrapper.querySelector(".remove-btn").addEventListener("click", () => removeVariant(wrapper));
 
-    const storageInput = wrapper.querySelector(`#storage-${variantIndex}`);
-    const stockInput = wrapper.querySelector(`#stock-${variantIndex}`);
-    const priceInput = wrapper.querySelector(`#price-${variantIndex}`);
-    const storageErrorDiv = wrapper.querySelector(`#error-storage-${variantIndex}`);
-    const stockErrorDiv = wrapper.querySelector(`#error-stock-${variantIndex}`);
-    const priceErrorDiv = wrapper.querySelector(`#error-price-${variantIndex}`);
+    const storageInput = wrapper.querySelector(".storage");
+    const stockInput = wrapper.querySelector(".stock");
+    const priceInput = wrapper.querySelector(".price");
+    const salePercInput = wrapper.querySelector(".sale-percentage");
+    const salePriceInput = wrapper.querySelector(".sale-price");
+    const saleDateInput = wrapper.querySelector(".sale-date");
 
-    variantFields.push(storageInput);
-    variantFields.push(storageErrorDiv);
-    variantFields.push(stockInput);
-    variantFields.push(stockErrorDiv);
-    variantFields.push(priceInput);
-    variantFields.push(priceErrorDiv);
+    const storageErrorDiv = wrapper.querySelector(".error-storage");
+    const stockErrorDiv = wrapper.querySelector(".error-stock");
+    const priceErrorDiv = wrapper.querySelector(".error-price");
+    const salePercErrorDiv = wrapper.querySelector(".error-sale-perc");
+    const salePriceErrorDiv = wrapper.querySelector(".error-sale-price");
+    const saleDateErrorDiv = wrapper.querySelector(".error-sale-date");
+
+    variantFields.push(
+        storageInput, storageErrorDiv,
+        stockInput, stockErrorDiv,
+        priceInput, priceErrorDiv,
+        salePercInput, salePercErrorDiv,
+        salePriceInput, salePriceErrorDiv,
+        saleDateInput, saleDateErrorDiv
+    );
 
     storageInput.addEventListener("input", () => checkStorageStock(storageInput, storageErrorDiv));
     stockInput.addEventListener("input", () => checkStorageStock(stockInput, stockErrorDiv));
     priceInput.addEventListener("input", () => checkPrice(priceInput, priceErrorDiv));
+    salePercInput.addEventListener("input", () => checkPercentage(salePercInput, salePercErrorDiv));
+    salePriceInput.addEventListener("input", () => checkPrice(salePriceInput, salePriceErrorDiv));
+    saleDateInput.addEventListener("input", () => checkDate(saleDateInput, saleDateErrorDiv));
 
     container.appendChild(wrapper);
 }
 
 function removeVariant(wrapper) {
-    if (variantIndex <= 1) {
-        showPopup(popUpTitle, popUpMessageNoVariants);
-        return;
-    }
-
+    if (variantIndex <= 1) return showPopup(popUpTitle, popUpMessageNoVariants);
     wrapper.remove();
     container.querySelector("div.item").classList.add("first");
-
     let counter = 1;
-    container.querySelectorAll("div.item label").forEach(el => el.textContent = variantTitle + " " + counter++);
+    container.querySelectorAll("div.item label").forEach(el => el.textContent = `${variantTitle} ${counter++}`);
     variantIndex = counter - 1;
 }
 

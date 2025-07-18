@@ -12,18 +12,18 @@
     <main class="main-cont">
       <div class="list">
         <div class="list-header">
-          <h2>Lista ordini</h2>
-          <input type="text" id="search-bar" placeholder="Cerca ordini..." />
+          <h2><%= langBundle.getString(pageName + ".ordersList") %></h2>
+          <input type="text" id="search-bar" placeholder="<%= langBundle.getString(pageName + ".searchOrders") %>" />
         </div>
 
         <div class="actual-list" id="list">
           <div class="actual-list-header">
-            <span>Nr.</span>
-            <span>Data</span>
-            <span>Totale pagato</span>
-            <span>Indirizzo</span>
-            <span>Stato</span>
-            <span>Azioni</span>
+            <span><%= langBundle.getString(pageName + ".nr") %></span>
+            <span><%= langBundle.getString(pageName + ".date") %></span>
+            <span><%= langBundle.getString(pageName + ".totalPaid") %></span>
+            <span><%= langBundle.getString(pageName + ".address") %></span>
+            <span><%= langBundle.getString(pageName + ".status") %></span>
+            <span><%= langBundle.getString(pageName + ".actions") %></span>
           </div>
         </div>
       </div>

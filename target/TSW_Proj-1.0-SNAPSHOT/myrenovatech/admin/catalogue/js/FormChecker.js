@@ -12,14 +12,9 @@ brandInput.addEventListener("input", () => checkGeneral(brandInput, brandError, 
 modelInput.addEventListener("input", () => checkGeneral(modelInput, modelError, modelRegex));
 
 function checkGeneral(input, errorDiv, regex) {
-    if (regex.test(input.value)) {
-        errorDiv.style.display = "none";
-        return true;
-    }
-    else {
-        errorDiv.style.display = "block";
-        return false;
-    }
+    const isValid = regex.test(input.value);
+    errorDiv.style.display = isValid ? "none" : "block";
+    return isValid;
 }
 
 function checkStorageStock(input, errorDiv) {
@@ -30,31 +25,39 @@ function checkPrice(input, errorDiv) {
     return checkGeneral(input, errorDiv, /^\d+(\.\d{1,2})?$/);
 }
 
+function checkPercentage(input, errorDiv) {
+    return checkGeneral(input, errorDiv, /^(100|\d{1,2})$/);
+}
+
+function checkDate(input, errorDiv) {
+    const isValid = input.value.trim() !== "";
+    errorDiv.style.display = isValid ? "none" : "block";
+    return isValid;
+}
+
 function checkAllFields() {
     let result = true;
-
     for (let i = 0; i < variantFields.length; i += 2) {
-
-        switch (variantFields[i].name) {
+        const input = variantFields[i];
+        const error = variantFields[i + 1];
+        switch (input.name) {
             case "variantStorage[]":
             case "variantStock[]":
-                result = checkStorageStock(variantFields[i], variantFields[i + 1]);
+                result = checkStorageStock(input, error) && result;
                 break;
-
             case "variantPrice[]":
-                result = checkPrice(variantFields[i], variantFields[i + 1]);
+            case "variantSalePrice[]":
+                result = checkPrice(input, error) && result;
                 break;
-
-            default:
-                result = false;
+            case "variantSalePercentage[]":
+                result = checkPercentage(input, error) && result;
+                break;
+            case "variantSaleDate[]":
+                result = checkDate(input, error) && result;
                 break;
         }
     }
-
-    if (!checkGeneral(brandInput, brandError, brandRegex))
-        result = false;
-    if (!checkGeneral(modelInput, modelError, modelRegex))
-        result = false;
-
+    result = checkGeneral(brandInput, brandError, brandRegex) && result;
+    result = checkGeneral(modelInput, modelError, modelRegex) && result;
     return result;
 }

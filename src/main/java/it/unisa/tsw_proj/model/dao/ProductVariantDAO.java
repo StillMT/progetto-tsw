@@ -4,10 +4,8 @@ import it.unisa.tsw_proj.model.bean.ProductBean;
 import it.unisa.tsw_proj.model.bean.ProductVariantBean;
 import it.unisa.tsw_proj.utils.DriverManagerConnectionPool;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -17,7 +15,7 @@ public class ProductVariantDAO {
 
     // Metodi
     public static List<ProductVariantBean> doGetAllProductsVariants() {
-        final String sql = "SELECT * FROM product_variant ORDER BY id_product";
+        final String sql = "SELECT * FROM product_variant WHERE product_variant.isDeleted = FALSE ORDER BY id_product";
         final List<ProductVariantBean> list = new ArrayList<>();
 
         Connection con = null;
@@ -30,7 +28,9 @@ public class ProductVariantDAO {
 
             rs = ps.executeQuery();
             while (rs.next())
-                list.add(new ProductVariantBean(rs.getInt("id"), rs.getInt("id_product"), rs.getString("color"), rs.getInt("storage"), rs.getInt("stock"), rs.getDouble("price")));
+                list.add(new ProductVariantBean(rs.getInt("id"), rs.getInt("id_product"), rs.getString("color"),
+                        rs.getInt("storage"), rs.getInt("stock"), rs.getDouble("price"),
+                        rs.getInt("sale_perc"), rs.getDouble("sale_final_price"), rs.getObject("sale_expire_date", LocalDateTime.class)));
         } catch (SQLException e) {
             DriverManagerConnectionPool.logSqlError(e, logger);
         } finally {
@@ -41,7 +41,7 @@ public class ProductVariantDAO {
     }
 
     public static boolean doInsertVariantBatch(ProductBean p, Connection con) {
-        final String sql = "INSERT INTO product_variant VALUES (NULL, ?, ?, ?, ?, ?)";
+        final String sql = "INSERT INTO product_variant VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?)";
         boolean result = false;
 
         PreparedStatement ps = null;
@@ -59,6 +59,9 @@ public class ProductVariantDAO {
                 ps.setInt(3, pv.getStorage());
                 ps.setInt(4, pv.getStock());
                 ps.setDouble(5, pv.getPrice());
+                ps.setInt(6, pv.getSalePercentage());
+                ps.setDouble(7, pv.getSalePrice());
+                ps.setTimestamp(8, Timestamp.valueOf(pv.getSaleExpireDate()));
                 ps.addBatch();
 
                 counter++;
@@ -89,7 +92,7 @@ public class ProductVariantDAO {
 
         try {
             List<ProductVariantBean> pvs = p.getProductVariants();
-            String sql = "DELETE FROM product_variant WHERE id_product = ? AND id NOT IN (" + pvs.stream().map(_ -> "?").collect(Collectors.joining(", ")) + ")";
+            String sql = "UPDATE product_variant SET isDeleted = TRUE WHERE id_product = ? AND id NOT IN (" + pvs.stream().map(_ -> "?").collect(Collectors.joining(", ")) + ")";
 
             ps = con.prepareStatement(sql);
 
@@ -99,25 +102,28 @@ public class ProductVariantDAO {
 
             ps.executeUpdate();
 
-            sql = "UPDATE product_variant SET color = ?, storage = ?, stock = ?, price = ? WHERE id = ?";
+            sql = "UPDATE product_variant SET color = ?, storage = ?, stock = ?, price = ?, sale_perc = ?, sale_final_price = ?, sale_expire_date = ? WHERE id = ?";
             ps = con.prepareStatement(sql);
 
-            int counter = 0;
+            boolean newVariants = false;
             for (ProductVariantBean pv : pvs) {
-                if (pv.getId() == -1)
+                if (pv.getId() == -1) {
+                    newVariants = true;
                     continue;
+                }
 
                 ps.setString(1, pv.getHexColor());
                 ps.setInt(2, pv.getStorage());
                 ps.setInt(3, pv.getStock());
                 ps.setDouble(4, pv.getPrice());
-                ps.setInt(5, pv.getId());
+                ps.setInt(5, pv.getSalePercentage());
+                ps.setDouble(6, pv.getSalePrice());
+                ps.setTimestamp(7, Timestamp.valueOf(pv.getSaleExpireDate()));
+                ps.setInt(8, pv.getId());
                 ps.addBatch();
-
-                counter++;
             }
 
-            if (counter > 0) {
+            if (!pvs.isEmpty()) {
                 int[] batchResult = ps.executeBatch();
                 result = true;
                 for (int res : batchResult)
@@ -127,7 +133,7 @@ public class ProductVariantDAO {
                     }
             }
 
-            if (result)
+            if (result && newVariants)
                 result = doInsertVariantBatch(p, con);
         } catch (SQLException e) {
             DriverManagerConnectionPool.logSqlError(e, logger);
@@ -159,7 +165,9 @@ public class ProductVariantDAO {
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                ProductVariantBean pv = new ProductVariantBean(rs.getInt("id"), rs.getInt("id_product"), rs.getString("color"), rs.getInt("storage"), rs.getInt("stock"), rs.getDouble("price"));
+                ProductVariantBean pv = new ProductVariantBean(rs.getInt("id"), rs.getInt("id_product"),
+                        rs.getString("color"), rs.getInt("storage"), rs.getInt("stock"),
+                        rs.getDouble("price"));
 
                 if (p != null)
                     p.addVariant(pv);

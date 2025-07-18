@@ -12,7 +12,7 @@
     <main class="main-cont">
       <div class="list">
         <div class="list-header">
-          <h2>Lista clienti</h2>
+          <h2><%= langBundle.getString(pageName + ".clientList") %></h2>
           <span class="refresh-list-span">
             <button id="cust-refresh-list"></button>
             <input id="search-input" type="text" placeholder="<%= langBundle.getString(pageName + ".searchBar") %>" />
@@ -21,30 +21,30 @@
 
         <div class="actual-list" id="customers-list">
           <div class="actual-list-header">
-            <span>ID</span>
-            <span>Nome completo</span>
-            <span>Username</span>
-            <span>E-mail</span>
-            <span>Ruolo</span>
-            <span>Azioni</span>
+            <span><%= langBundle.getString(pageName + ".id") %></span>
+            <span><%= langBundle.getString(pageName + ".fullName") %></span>
+            <span><%= langBundle.getString(pageName + ".username") %></span>
+            <span><%= langBundle.getString(pageName + ".email") %></span>
+            <span><%= langBundle.getString(pageName + ".role") %></span>
+            <span><%= langBundle.getString(pageName + ".actions") %></span>
           </div>
         </div>
       </div>
 
       <div class="list">
         <div class="list-header">
-          <h2>Lista ordini <span id="active-view">per <span id="active-view-username"></span></span></h2>
+          <h2><%= langBundle.getString(pageName + ".ordersList") %> <span id="active-view"><%= langBundle.getString(pageName + ".for") %> <span id="active-view-username"></span></span></h2>
           <button class="remove-btn" id="active-view-close-btn"></button>
         </div>
 
         <div class="actual-list" id="orders-list">
           <div class="actual-list-header">
-            <span>Nr.</span>
-            <span>Data</span>
-            <span>Totale pagato</span>
-            <span>Indirizzo</span>
-            <span>Stato</span>
-            <span>Azioni</span>
+            <span><%= langBundle.getString(pageName + ".nr") %></span>
+            <span><%= langBundle.getString(pageName + ".date") %></span>
+            <span><%= langBundle.getString(pageName + ".totalPaid") %></span>
+            <span><%= langBundle.getString(pageName + ".address") %></span>
+            <span><%= langBundle.getString(pageName + ".status") %></span>
+            <span><%= langBundle.getString(pageName + ".actions") %></span>
           </div>
         </div>
       </div>

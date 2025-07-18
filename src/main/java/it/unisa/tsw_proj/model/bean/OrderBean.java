@@ -12,15 +12,17 @@ public class OrderBean {
         orderItems = new ArrayList<>();
     }
 
-    public OrderBean(int id, int idUser, String orderNr, String orderDate, double totalPrice, AddressBean address, OrderState state, String tracking) {
+    public OrderBean(int id, int idUser, String orderNr, String orderDate, double totalPrice, double shippingCost, AddressBean address, OrderState state, String tracking, String userName) {
         this.id = id;
         this.idUser = idUser;
         this.orderNr = orderNr;
         this.orderDate = orderDate;
         this.totalPrice = totalPrice;
+        this.shippingCost = shippingCost;
         this.address = address;
         this.state = state;
         this.tracking = tracking;
+        this.userName = userName;
         orderItems = new ArrayList<>();
     }
 
@@ -45,6 +47,10 @@ public class OrderBean {
         return totalPrice;
     }
 
+    public double getShippingCost() {
+        return shippingCost;
+    }
+
     public AddressBean getAddress() {
         return address;
     }
@@ -55,6 +61,10 @@ public class OrderBean {
 
     public String getTracking() {
         return tracking;
+    }
+
+    public String getUserName() {
+        return userName;
     }
 
     public List<OrderItemBean> getOrderItems() {
@@ -96,8 +106,10 @@ public class OrderBean {
     private String orderNr;
     private String orderDate;
     private double totalPrice;
+    private double shippingCost;
     private AddressBean address;
     private OrderState state;
     private String tracking;
+    private String userName;
     private final List<OrderItemBean> orderItems;
 }
