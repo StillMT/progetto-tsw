@@ -19,14 +19,14 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-@WebServlet(urlPatterns = { "/products/productFileServlet", "/products/imgs/*" })
+@WebServlet(urlPatterns = { "/myrenovatech/admin/productFileServlet", "/products/imgs/*" })
 @MultipartConfig
 public class ProductFileServlet extends HttpServlet {
     final int MAX_IMAGES = 6;
     final String FINAL_PATH = "C:/Users/mario/IdeaProjects/TSW_Proj/external-images/";
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (!request.getServletPath().equals("/products/productFileServlet")) {
+        if (!request.getServletPath().equals("/myrenovatech/admin/productFileServlet")) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
@@ -85,12 +85,18 @@ public class ProductFileServlet extends HttpServlet {
                 JSONArray jsonArray = new JSONArray();
                 File[] files = pDir.listFiles();
                 if (files != null)
-                    for (File file : files)
-                        if (file.isFile() && !file.isHidden())
-                            jsonArray.put(file.getName());
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
-                response.getWriter().write(new JSONObject().put("products", jsonArray).toString());
+                    if (request.getAttribute("productView") == Boolean.TRUE) {
+                        request.setAttribute("productImgsCount", files.length);
+                        request.getRequestDispatcher("/products/view-product.jsp").forward(request, response);
+                    } else {
+                        for (File file : files)
+                            if (file.isFile() && !file.isHidden())
+                                jsonArray.put(file.getName());
+
+                        response.setContentType("application/json");
+                        response.setCharacterEncoding("UTF-8");
+                        response.getWriter().write(new JSONObject().put("products", jsonArray).toString());
+                    }
             } else {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
@@ -103,7 +109,7 @@ public class ProductFileServlet extends HttpServlet {
         if (requestedPath == null || requestedPath.contains("..")) {
             file = new File(FINAL_PATH, FALLBACK_IMAGE);
         } else {
-            String[] parts = requestedPath.substring(1).split("/"); // remove leading slash
+            String[] parts = requestedPath.substring(1).split("/");
             if (parts.length == 2) {
                 String productId = parts[0];
                 String imageName = parts[1];

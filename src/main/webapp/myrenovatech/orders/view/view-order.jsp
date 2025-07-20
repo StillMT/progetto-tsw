@@ -2,15 +2,10 @@
 <%@ page import="it.unisa.tsw_proj.model.bean.*" %>
 <%@ page import="java.util.Objects" %>
 <%@ page import="it.unisa.tsw_proj.model.OrderState" %>
+<%@ page import="it.unisa.tsw_proj.utils.FieldValidator" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 
 <%@ include file="/WEB-INF/includes/lang-selector.jspf" %>
-
-<%!
-  public String printPrice(Double price) {
-    return String.format("€%,.2f", price);
-  }
-%>
 
 <!DOCTYPE html>
 <html>
@@ -40,7 +35,7 @@
 
       <div class="error-box">
         <h2><%= langBundle.getString(pageName + ".error") %></h2>
-        <span>Annullamento ordine fallito</span>
+        <span><%= langBundle.getString(pageName + ".cancelFailed") %></span>
       </div>
 
       <% } %>
@@ -48,46 +43,46 @@
       <div class="order-wrapper">
         <div class="order-info-wrapper">
           <div class="order-info-wrapper-header">
-            <h2>Dettagli dell'ordine</h2>
+            <h2><%= langBundle.getString(pageName + ".orderDetails") %></h2>
             <% if (o.getIdUser() != us.getId()) { %>
 
-            <span>Ordine creato da: <%= o.getUserName() %></span>
+            <span><%= langBundle.getString(pageName + ".orderCreated") %>: <%= o.getUserName() %></span>
 
             <% } %>
           </div>
 
           <div class="order-info">
             <div class="order-info-header">
-              <span>Numero d'ordine: <%= o.getOrderNr() %></span>
-              <span>Creato il: <%= o.getOrderDate() %></span>
+              <span><%= langBundle.getString(pageName + ".orderNumber") %>: <%= o.getOrderNr() %></span>
+              <span><%= langBundle.getString(pageName + ".createdOn") %>: <%= o.getOrderDate() %></span>
             </div>
 
             <div class="order-info-content">
               <div class="order-info-address">
-                <h4>Invia a</h4>
+                <h4><%= langBundle.getString(pageName + ".sendTo") %></h4>
                 <span><%= o.getAddress().toString() %></span>
               </div>
 
               <div class="order-info-status">
-                <h4>Stato ordine</h4>
+                <h4><%= langBundle.getString(pageName + ".orderStatus") %></h4>
                 <span><%= langBundle.getString(o.getState().toString()) %></span>
               </div>
 
               <div class="order-info-summary">
-                <h4>Riepilogo ordine</h4>
+                <h4><%= langBundle.getString(pageName + ".orderSummary") %></h4>
                 <span>
-                  <span>Subtotale articoli:</span>
-                  <span><%= printPrice(o.getTotalPrice()) %></span>
+                  <span><%= langBundle.getString(pageName + ".subtotalArticles") %></span>
+                  <span><%= FieldValidator.formatEuroPrice(o.getTotalPrice()) %></span>
                 </span>
 
                 <span>
-                  <span>Costi di spedizione:</span>
-                  <span><%= printPrice(o.getShippingCost()) %></span>
+                  <span><%= langBundle.getString(pageName + ".shippingCosts") %></span>
+                  <span><%= FieldValidator.formatEuroPrice(o.getShippingCost()) %></span>
                 </span>
 
                 <span>
-                  <span class="total-price">Totale:</span>
-                  <span><%= printPrice(o.getTotalPrice() + o.getShippingCost()) %></span>
+                  <span class="total-price"><%= langBundle.getString(pageName + ".totalPrice") %></span>
+                  <span><%= FieldValidator.formatEuroPrice(o.getTotalPrice() + o.getShippingCost()) %></span>
                 </span>
               </div>
             </div>
@@ -99,21 +94,21 @@
 
                 if (os == OrderState.TO_SHIP) {
               %>
-              <span><a href="../orderServlet?action=cancelOrder&orderNr=<%= o.getOrderNr() %>" id="cancel-order">Annulla ordine</a></span>
+              <span><a href="../orderServlet?action=cancelOrder&orderNr=<%= o.getOrderNr() %>" id="cancel-order"><%= langBundle.getString(pageName + ".cancelOrder") %></a></span>
               <% } %>
 
               <%
                 String tracking = o.getTracking();
                 if (!tracking.isBlank()) {
               %>
-              <span><a target="_blank" href="https://t.17track.net/<%= lang %>#nums=<%= tracking %>">Traccia ordine</a> (<%= tracking %>)</span>
+              <span><a target="_blank" href="https://t.17track.net/<%= lang %>#nums=<%= tracking %>"><%= langBundle.getString(pageName + ".trackOrder") %></a> (<%= tracking %>)</span>
               <% } %>
             </div>
           </div>
         </div>
 
         <div class="order-list-wrapper">
-          <h3>Prodotti acquistati</h3>
+          <h3><%= langBundle.getString(pageName + ".productPurchased") %></h3>
           <div class="order-list">
             <%
               List<OrderItemBean> l = o.getOrderItems();
@@ -128,11 +123,11 @@
 
               <div class="order-list-item-info">
                 <span><a href="${pageContext.request.contextPath}/products/?prodId=<%= p.getId() %>&pvId=<%= pv.getId() %>"><%= p.getBrand() %>, <%= p.getModel() %></a></span>
-                <span><div class="vColor" style="background-color: <%= pv.getHexColor() %>"></div> <%= pv.getStorage() %> GB, <%= printPrice(i.getPrice()) %>, <%= i.getQt() %> pz.</span>
+                <span><div class="vColor" style="background-color: <%= pv.getHexColor() %>"></div> <%= pv.getStorage() %> GB - <%= FieldValidator.formatEuroPrice(i.getPrice()) %> - <%= i.getQt() %> pz.</span>
               </div>
 
               <div class="order-list-item-total-price">
-                <span><%= printPrice(i.getTotal()) %></span>
+                <span><%= FieldValidator.formatEuroPrice(i.getTotal()) %></span>
               </div>
             </div>
 
@@ -148,8 +143,8 @@
     </main>
 
     <script>
-      const popUpTitle = "Attenzione";
-      const popUpMessageSureToCancel = "Clicca di nuovo il tasto annulla se sei sicuro di annullare questo ordine";
+      const popUpTitle = "<%= langBundle.getString(pageName + ".warning") %>";
+      const popUpMessageSureToCancel = "<%= langBundle.getString(pageName + ".cancel") %>";
     </script>
     <script src="js/CancelOrderHandler.js"></script>
 

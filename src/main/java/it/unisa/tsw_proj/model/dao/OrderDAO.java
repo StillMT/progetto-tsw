@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class OrderDAO {
+public class  OrderDAO {
 
     public static List<OrderBean> doGetOrdersFromIdUser(int id) {
         final String sql = "SELECT o.id, o.id_user, o.order_nr, o.date, o.shipping_costs, o.state AS order_state, o.tracking, a.street, a.city, a.state AS address_state, a.zip, a.country, SUM(oi.price * oi.qt) AS total_price FROM `order` o JOIN address a ON o.id_address = a.id JOIN order_item oi ON o.id = oi.id_order WHERE o.id_user = ? GROUP BY o.id, o.id_user, o.order_nr, o.date, o.shipping_costs, o.state, o.tracking, a.street, a.city, a.state, a.zip, a.country";

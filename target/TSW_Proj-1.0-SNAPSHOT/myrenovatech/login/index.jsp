@@ -47,7 +47,7 @@
                     }
                 %>
 
-                <h2>Login</h2>
+                <h2><%= langBundle.getString(pageName + ".loginTitle") %></h2>
                 <form action="${pageContext.request.contextPath}/login" method="post">
                     <div class="div-label"><label for="username"><%= langBundle.getString(pageName + ".username") %></label></div>
                     <input type="text" name="username" id="user" required />

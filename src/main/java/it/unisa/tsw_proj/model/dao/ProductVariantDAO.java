@@ -120,6 +120,7 @@ public class ProductVariantDAO {
                 ps.setDouble(6, pv.getSalePrice());
                 ps.setTimestamp(7, Timestamp.valueOf(pv.getSaleExpireDate()));
                 ps.setInt(8, pv.getId());
+
                 ps.addBatch();
             }
 
@@ -145,7 +146,7 @@ public class ProductVariantDAO {
     }
 
     public static List<ProductVariantBean> doGetAllProductVariantsByProductId(int prodId, Connection con, ProductBean p) throws SQLException {
-        final String sql = "SELECT * FROM product_variant WHERE id_product = ?";
+        final String sql = "SELECT * FROM product_variant WHERE id_product = ? AND isDeleted = FALSE";
         final List<ProductVariantBean> pvl = new ArrayList<>();
 
         boolean conGenerated = false;
@@ -167,7 +168,8 @@ public class ProductVariantDAO {
             while (rs.next()) {
                 ProductVariantBean pv = new ProductVariantBean(rs.getInt("id"), rs.getInt("id_product"),
                         rs.getString("color"), rs.getInt("storage"), rs.getInt("stock"),
-                        rs.getDouble("price"));
+                        rs.getDouble("price"), rs.getInt("sale_perc"), rs.getDouble("sale_final_price"),
+                        rs.getObject("sale_expire_date", LocalDateTime.class));
 
                 if (p != null)
                     p.addVariant(pv);
@@ -181,6 +183,33 @@ public class ProductVariantDAO {
         }
 
         return pvl;
+    }
+
+    public static ProductVariantBean doGetProductVariantById(int id, Connection con) {
+        final String sql = "SELECT * FROM product_variant WHERE id = ?";
+        ProductVariantBean pv = null;
+
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            ps = con.prepareStatement(sql);
+
+            ps.setInt(1, id);
+
+            rs = ps.executeQuery();
+            if (rs.next())
+                pv = new ProductVariantBean(rs.getInt("id"), rs.getInt("id_product"),
+                        rs.getString("color"), rs.getInt("storage"), rs.getInt("stock"),
+                        rs.getDouble("price"), rs.getInt("sale_perc"), rs.getDouble("sale_final_price"),
+                        rs.getObject("sale_expire_date", LocalDateTime.class));
+        } catch (SQLException e) {
+            DriverManagerConnectionPool.logSqlError(e, logger);
+        } finally {
+            DriverManagerConnectionPool.closeSqlParams(null, ps, rs);
+        }
+
+        return pv;
     }
 
     // Attributi

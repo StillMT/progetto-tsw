@@ -56,6 +56,7 @@ function createProductRow(p) {
         <span class="truncated-description" title="${escapeHtml(p.description)}">${escapeHtml(p.description)}</span>
         <span class="variant-boxes">${variantHTML}</span>
         <span class="btns-wrapper">
+            <a href="/products/?prodId=${p.id}" target="_blank"><button class="view-btn">${viewBtn}</button></a>
             <button class="edit-btn" data-id="${p.id}"
                 data-brand="${escapeHtml(p.brand)}"
                 data-model="${escapeHtml(p.model)}"

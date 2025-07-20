@@ -8,15 +8,6 @@ public class ProductVariantBean {
     // Costruttori
     public ProductVariantBean() {}
 
-    public ProductVariantBean(int id, int idProduct, String hexColor, int storage, int stock, double price) {
-        this.id = id;
-        this.idProduct = idProduct;
-        color = Color.decode(hexColor);
-        this.storage = storage;
-        this.stock = stock;
-        this.price = price;
-    }
-
     public ProductVariantBean(int id, int idProduct, String hexColor, int storage, int stock, double price, int salePercentage, double salePrice, LocalDateTime saleExpireDate) {
         this.id = id;
         this.idProduct = idProduct;

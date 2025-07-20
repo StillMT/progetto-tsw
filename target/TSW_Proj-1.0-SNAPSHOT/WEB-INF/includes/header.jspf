@@ -19,7 +19,7 @@
     };
 
     String uri = request.getRequestURI();
-    String logoLink = uri.equals(PAGES_LINKS[0]) ? "#" : "/";
+    String logoLink = uri.equals(PAGES_LINKS[0]) ? "javascript:void(0)" : "/";
 
     UserBean us = (UserBean) request.getSession().getAttribute("user");
     CartBean cart = (CartBean) request.getSession().getAttribute("cart");
@@ -61,7 +61,7 @@
                 <nav>
                     <% for (int i = 0; i < PAGES.length; i++) {
                         boolean thisPage = uri.equals(PAGES_LINKS[i]); %>
-                    <a href="<%= thisPage ? "#" : PAGES_LINKS[i] %>" <%= thisPage ? "class=\"selected\"" : "" %>>
+                    <a href="<%= thisPage ? "javascript:void(0)" : PAGES_LINKS[i] %>" <%= thisPage ? "class=\"selected\"" : "" %>>
                         <%= PAGES[i] %>
                     </a>
                     <% } %>
@@ -110,7 +110,7 @@
 
         <% for (int i = 0; i < PAGES.length; i++) {
             boolean thisPage = uri.equals(PAGES_LINKS[i]); %>
-        <a href="<%= thisPage ? "#" : PAGES_LINKS[i] %>" <%= thisPage ? "class=\"selected\"" : "" %>>
+        <a href="<%= thisPage ? "javascript:void(0)" : PAGES_LINKS[i] %>" <%= thisPage ? "class=\"selected\"" : "" %>>
             <%= PAGES[i] %>
         </a>
         <% } %>

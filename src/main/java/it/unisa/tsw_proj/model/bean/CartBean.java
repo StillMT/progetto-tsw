@@ -1,6 +1,7 @@
 package it.unisa.tsw_proj.model.bean;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CartBean {
 
@@ -13,12 +14,27 @@ public class CartBean {
         return id_user;
     }
 
-    public ArrayList<CartedProduct> getProductList() {
+    public List<CartedProduct> getProductList() {
         return products;
     }
 
     public int getCartItemsCount() {
-        return products.size();
+        int count = 0;
+
+        for (CartedProduct product : products)
+            count += product.getQty();
+
+        return count;
+    }
+
+    public int getSelectedItemsCount() {
+        int count = 0;
+
+        for (CartedProduct product : products)
+            if (product.getSelected())
+                count += product.getQty();
+
+        return count;
     }
 
     // Metodi modificatori
@@ -26,8 +42,19 @@ public class CartBean {
         this.id_user = id_user;
     }
 
-    public void addProduct(int id, int qty) {
-        products.add(new CartedProduct(id, qty));
+    public void addProduct(int id, int idProd, int idVar, int qty, boolean selected) {
+        boolean added = false;
+
+        for (CartedProduct p : products)
+            if (p.getIdProd() == idProd && p.getIdVar() == idVar) {
+                p.setQty(p.getQty() + qty);
+
+                added = true;
+                break;
+            }
+
+        if (!added)
+            products.add(new CartedProduct(id, idProd, idVar, qty, selected));
     }
 
     public void removeProduct(int id) {
@@ -57,5 +84,5 @@ public class CartBean {
 
     // Attributi
     private int id_user;
-    final private ArrayList<CartedProduct> products;
+    final private List<CartedProduct> products;
 }

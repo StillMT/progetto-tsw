@@ -1,5 +1,6 @@
 package it.unisa.tsw_proj.utils;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,7 +11,16 @@ public final class FieldValidator {
     // Costruttore
     private FieldValidator() {}
 
-    // Metodi
+    // Metodi formatting
+    public static String formatEuroPrice(double price) {
+        return String.format("€%,.2f", price);
+    }
+
+    // Metodi validate
+    public static boolean validateDiscount(LocalDateTime expireDate) {
+        return expireDate != null && expireDate.isAfter(LocalDateTime.now());
+    }
+
     public static boolean repPswValidate(String psw, String repPsw) {
         return repPsw.equals(psw);
     }

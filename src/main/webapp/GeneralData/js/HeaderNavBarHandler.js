@@ -2,28 +2,34 @@ const topBar = document.querySelector('.top-bar');
 const mainBar = document.querySelector('.main-bar');
 const main = document.querySelector('.main-cont');
 
-function updateMainOffset() {
-    if (mainBar.classList.contains('fixed')) {
-        const barHeight = mainBar.offsetHeight;
-        main.style.paddingTop = `${barHeight}px`;
-    } else {
-        main.style.paddingTop = '';
+let lastFixedState = false;
+let barHeight = 0;
+
+function measureBarHeight() {
+    barHeight = mainBar.offsetHeight;
+}
+
+function updateFixedState() {
+    const topBarVisible = topBar && window.getComputedStyle(topBar).display !== 'none';
+    const threshold = topBarVisible ? topBar.offsetHeight : 0;
+    const shouldBeFixed = window.scrollY >= threshold;
+
+    if (shouldBeFixed !== lastFixedState) {
+        mainBar.classList.toggle('fixed', shouldBeFixed);
+        main.style.paddingTop = shouldBeFixed ? `${barHeight}px` : '';
+        lastFixedState = shouldBeFixed;
     }
 }
 
-window.addEventListener('scroll', () => {
-    if (window.scrollY >= topBar.offsetHeight)
-        mainBar.classList.add('fixed');
-    else
-        mainBar.classList.remove('fixed');
-
-    updateMainOffset();
+window.addEventListener('scroll', updateFixedState);
+window.addEventListener('resize', () => {
+    measureBarHeight();
+    updateFixedState();
 });
-
-window.addEventListener('resize', updateMainOffset);
-window.addEventListener('DOMContentLoaded', updateMainOffset);
-
-
+window.addEventListener('DOMContentLoaded', () => {
+    measureBarHeight();
+    updateFixedState();
+});
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('mobile-slide-overlay').addEventListener('click', () => toggleMobileMenu());

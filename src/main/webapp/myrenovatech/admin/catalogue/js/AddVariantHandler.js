@@ -8,7 +8,7 @@ function addValue(value) {
 document.getElementById("add-variant").addEventListener("click", () => addVariant());
 
 function addVariant(id, color, storage, stock, price, salePrice, salePercentage, saleExpireDate) {
-    function createInputSpan(label, type, name, className, placeholder, attributes = "") {
+    function createInputSpan(label, type, name, className, placeholder, attributes) {
         return `<span>${label}<input type="${type}" name="${name}" class="${className}" placeholder="${placeholder}" ${attributes}/></span>`;
     }
 
@@ -26,13 +26,13 @@ function addVariant(id, color, storage, stock, price, salePrice, salePercentage,
             ${createInputSpan(colorLabel, "color", "variantColor[]", "", "", color ? addValue(color) : "")}
             ${createInputSpan(storageLabel, "number", "variantStorage[]", "storage", "128 GB", storage !== null ? addValue(storage) : "min=1")}
             <div class="form-error error-storage"><p>${storageError}</p></div>
-            ${createInputSpan(stockLabel, "number", "variantStock[]", "stock", "10 pz", stock !== null ? addValue(stock) : "min=1")}
+            ${createInputSpan(stockLabel, "number", "variantStock[]", "stock", "10 pz", 'min="1"' + (stock !== null ? addValue(stock) : ""))}
             <div class="form-error error-stock"><p>${stockError}</p></div>
-            ${createInputSpan(priceLabel, "number", "variantPrice[]", "price", "999,99€", price !== null ? addValue(price) : "step=0.01 min=0.01")}
+            ${createInputSpan(priceLabel, "number", "variantPrice[]", "price", "999,99€", 'step="0.01" min="0.00"' + (price !== null ? addValue(price) : ""))}
             <div class="form-error error-price"><p>${priceError}</p></div>
-            ${createInputSpan(salePercLabel, "number", "variantSalePercentage[]", "sale-percentage", "20%", salePercentage !== null ? addValue(salePercentage) : "step=1 min=0 max=100")}
+            ${createInputSpan(salePercLabel, "number", "variantSalePercentage[]", "sale-percentage", "20%", 'step="1" min="0" max="100"' + (salePercentage !== null ? addValue(salePercentage) : ""))}
             <div class="form-error error-sale-perc"><p>${percError}</p></div>
-            ${createInputSpan(salePriceLabel, "number", "variantSalePrice[]", "sale-price", "999,99€", salePrice !== null ? addValue(salePrice) : "step=0.01 min=0.01")}
+            ${createInputSpan(salePriceLabel, "number", "variantSalePrice[]", "sale-price", "999,99€", 'step="0.01" min="0.00"' + (salePrice !== null ? addValue(salePrice) : ""))}
             <div class="form-error error-sale-price"><p>${priceError}</p></div>
             ${createInputSpan(saleExpDateLabel, "datetime-local", "variantSaleDate[]", "sale-date", "", saleExpireDate !== null ? addValue(saleExpireDate) : "")}
             <div class="form-error error-sale-date"><p>${dateError}</p></div>

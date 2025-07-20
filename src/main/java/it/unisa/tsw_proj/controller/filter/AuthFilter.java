@@ -15,6 +15,7 @@ public class AuthFilter implements Filter {
     private static final String REGISTER = "/register";
     private static final String RESERVED_AREA = "/myrenovatech";
     private static final String CART = "/myrenovatech/cart";
+    private static final String CHECKOUT = "/myrenovatech/cart/checkout";
     private static final String LOGIN_PAGE = "/myrenovatech/login";
     private static final String ADMIN_ROOT = "/myrenovatech/admin";
 
@@ -49,16 +50,25 @@ public class AuthFilter implements Filter {
         }
 
         if (path.startsWith(context + LOGIN_PAGE)) {
-            if (!logged)
-                chain.doFilter(request, response);
-            else
+            if (logged)
                 res.sendRedirect("/");
+            else
+                chain.doFilter(request, response);
 
             return;
         }
 
         if (path.startsWith(context + CART)) {
             chain.doFilter(request, response);
+            return;
+        }
+
+        if (path.startsWith(context + CHECKOUT)) {
+            if (logged)
+                chain.doFilter(request, response);
+            else
+                res.sendRedirect(LOGIN_PAGE);
+
             return;
         }
 
@@ -74,9 +84,7 @@ public class AuthFilter implements Filter {
         // Default: blocca se non loggato
         if (logged)
             chain.doFilter(request, response);
-        else {
+        else
             res.sendRedirect(LOGIN_PAGE + "?error=auth");
-            return;
-        }
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="renovatech_db@server" uuid="7006f759-5084-4958-918a-1d77559910b9">
+    <data-source source="LOCAL" name="renovatech_db@localhost" uuid="7006f759-5084-4958-918a-1d77559910b9">
       <driver-ref>mariadb</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.mariadb.jdbc.Driver</jdbc-driver>

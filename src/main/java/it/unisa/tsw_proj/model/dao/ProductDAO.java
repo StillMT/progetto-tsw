@@ -14,6 +14,33 @@ import java.util.logging.Logger;
 public class ProductDAO {
 
     // Metodi
+    public static boolean doCheckProductForCart(int id, int pvId, int qty) {
+        final String sql = "SELECT p.id FROM product p JOIN product_variant pv ON pv.id_product = p.id WHERE p.id = ? AND pv.id = ? AND pv.stock >= ?";
+        boolean result = false;
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            con = DriverManagerConnectionPool.getConnection();
+            ps = con.prepareStatement(sql);
+
+            ps.setInt(1, id);
+            ps.setInt(2, pvId);
+            ps.setInt(3, qty);
+
+            rs = ps.executeQuery();
+            result = rs.next();
+        } catch (SQLException e) {
+            DriverManagerConnectionPool.logSqlError(e, logger);
+        } finally {
+            DriverManagerConnectionPool.closeSqlParams(con, ps, rs);
+        }
+
+        return result;
+    }
+
     public static List<ProductBean> doGetAllProducts() {
         final String sql = "SELECT * FROM product WHERE isDeleted = FALSE";
         List<ProductBean> products = new ArrayList<>();
@@ -58,7 +85,7 @@ public class ProductDAO {
         return products;
     }
 
-    public static ProductBean doGetProduct(int id) {
+    public static ProductBean doGetProduct(int id, Integer pvId) {
         final String sql = "SELECT * FROM product WHERE id = ?";
         ProductBean p = null;
 
@@ -75,7 +102,10 @@ public class ProductDAO {
 
             if (rs.next()) {
                 p = new ProductBean(rs.getInt("id"), rs.getString("brand"), rs.getString("model"), rs.getString("description"), rs.getInt("id_category"));
-                ProductVariantDAO.doGetAllProductVariantsByProductId(id, con, p);
+                if (pvId == null)
+                    ProductVariantDAO.doGetAllProductVariantsByProductId(id, con, p);
+                else
+                    p.addVariant(ProductVariantDAO.doGetProductVariantById(pvId, con));
             }
         } catch (SQLException e) {
             DriverManagerConnectionPool.logSqlError(e, logger);

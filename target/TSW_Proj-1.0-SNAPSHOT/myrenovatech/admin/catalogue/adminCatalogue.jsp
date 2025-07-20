@@ -117,16 +117,17 @@
     </main>
 
     <script>
-      const colorLabel = "Colore";
-      const storageLabel = "Storage";
-      const stockLabel = "Stock";
-      const priceLabel = "Prezzo";
-      const salePercLabel = "Perc. sconto";
-      const salePriceLabel = "Prez. sconto";
-      const saleExpDateLabel = "Scandenza sconto";
+      const colorLabel = "<%= langBundle.getString(pageName + ".color") %>";
+      const storageLabel = "<%= langBundle.getString(pageName + ".storage") %>";
+      const stockLabel = "<%= langBundle.getString(pageName + ".stock") %>";
+      const priceLabel = "<%= langBundle.getString(pageName + ".price") %>";
+      const salePercLabel = "<%= langBundle.getString(pageName + ".discountPercentage") %>";
+      const salePriceLabel = "<%= langBundle.getString(pageName + ".discountPrice") %>";
+      const saleExpDateLabel = "<%= langBundle.getString(pageName + ".discountExpiration") %>";
 
       const noProductsInList = "<%= langBundle.getString(pageName + ".noProductsInList") %>";
 
+      const viewBtn = "<%= langBundle.getString(pageName + ".viewBtn") %>";
       const headerTitleAdd = "<%= langBundle.getString(pageName + ".addProd") %>";
       const headerTitleEdit = "<%= langBundle.getString(pageName + ".editProd") %>";
       const headerTitleProduct = "<%= langBundle.getString(pageName + ".product") %>";
@@ -143,8 +144,8 @@
       const storageError = "<%= langBundle.getString(pageName + ".storageError") %>";
       const stockError = "<%= langBundle.getString(pageName + ".stockError") %>";
       const priceError = "<%= langBundle.getString(pageName + ".priceError") %>";
-      const percError = "Perc";
-      const dateError = "Data";
+      const percError = "<%= langBundle.getString(pageName + ".percentageError") %>";
+      const dateError = "<%= langBundle.getString(pageName + ".dateError") %>";
     </script>
     <script src="js/FormChecker.js"></script>
     <script src="js/AddVariantHandler.js"></script>

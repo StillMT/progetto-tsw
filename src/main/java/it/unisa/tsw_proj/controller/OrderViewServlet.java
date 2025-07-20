@@ -18,10 +18,6 @@ public class OrderViewServlet extends HttpServlet {
 
         if (nr != null) {
             UserBean u = (UserBean) request.getSession().getAttribute("user");
-            if (u == null) {
-                response.sendRedirect("/");
-                return;
-            }
 
             Integer id = null;
             if (!u.isAdmin())

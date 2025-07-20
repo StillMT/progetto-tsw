@@ -1,5 +1,9 @@
 package it.unisa.tsw_proj.model.bean;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +58,34 @@ public class ProductBean {
     public List<ProductVariantBean> getProductVariants() {
         return productVariants;
     }
+
+    /*public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("id", id);
+        json.put("brand", brand);
+        json.put("model", model);
+        json.put("description", description);
+        json.put("idCategory", idCategory);
+
+        JSONArray variants = new JSONArray();
+        for (ProductVariantBean v : productVariants) {
+            JSONObject variant = new JSONObject();
+            variant.put("id", v.getId());
+            variant.put("id_product", v.getIdProduct());
+            variant.put("hexColor", v.getHexColor());
+            variant.put("storage", v.getStorage());
+            variant.put("stock", v.getStock());
+            variant.put("price", v.getPrice());
+            variant.put("salePrice", v.getSalePrice());
+            variant.put("salePercentage", v.getSalePercentage());
+            variant.put("saleExpireDate", v.getSaleExpireDate().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+
+            variants.put(variant);
+        }
+        json.put("variants", variants);
+
+        return json;
+    }*/
 
     // Metodi modificatori
     public void setId(int id) {

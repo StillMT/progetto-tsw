@@ -1,8 +1,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="it.unisa.tsw_proj.model.bean.CategoryBean" %>
-<%@ page import="it.unisa.tsw_proj.model.dao.CategoryDAO" %>
 
-<% List<CategoryBean> cat = CategoryDAO.doGetAllCategories(); %>
+<% List<CategoryBean> cat = (List<CategoryBean>) request.getAttribute("catList"); %>
 
 <label for="category"><%= langBundle.getString("categorySel.category") %></label>
 <select name="category" id="category">

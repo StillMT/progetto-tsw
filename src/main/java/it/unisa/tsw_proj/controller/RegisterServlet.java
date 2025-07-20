@@ -43,7 +43,7 @@ public class RegisterServlet extends HttpServlet {
         int userId = UserDAO.doRegisterUser(user);
         if (userId > 0) {
             user.setId(userId);
-            SessionSetter.setSessionToLogin(request.getSession(), user);
+            SessionSetter.setSessionToLogin(request.getSession(), user, true);
             response.sendRedirect("/");
         }
         else

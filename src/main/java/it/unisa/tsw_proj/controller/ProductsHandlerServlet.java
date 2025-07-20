@@ -109,7 +109,7 @@ public class ProductsHandlerServlet extends HttpServlet {
                 }
 
                 request.setAttribute("id", prodId);
-                RequestDispatcher rd = request.getRequestDispatcher("/products/productFileServlet");
+                RequestDispatcher rd = request.getRequestDispatcher("/myrenovatech/admin/productFileServlet");
                 rd.forward(request, response);
                 break;
         }
