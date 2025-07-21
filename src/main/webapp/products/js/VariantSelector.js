@@ -46,7 +46,7 @@ variants.forEach((v) => v.addEventListener("click", () => {
         checkoutPrice.textContent = formatPrice(price);
     }
 
-    const stockText = stock > 10 ? available : availableOnly + stock;
+    const stockText = stock > 10 ? available : `${availableOnly}: ${stock}`;
     stockInfoMain.textContent = stockText;
     stockInfoCheckout.textContent = stockText;
 

@@ -3,6 +3,10 @@ package it.unisa.tsw_proj.model.bean;
 public class AddressBean {
 
     // Costruttori
+    public AddressBean() {
+
+    }
+
     public AddressBean(String street, String city, String state, String zip, String country) {
         this.street = street;
         this.city = city;

@@ -10,6 +10,11 @@
     <%@ include file="/WEB-INF/includes/header.jspf" %>
 
     <main class="main-cont">
+
+      <% if ("no_added_order".equals(request.getParameter("error"))) { %>
+      <div class="error-box"><%= langBundle.getString(pageName + ".errorAdding") %></div>
+      <% } %>
+
       <div class="list">
         <div class="list-header">
           <h2><%= langBundle.getString(pageName + ".ordersList") %></h2>

@@ -10,41 +10,9 @@
     <%@ include file="/WEB-INF/includes/header.jspf" %>
 
     <main class="main-cont">
-      ciao
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      <br>
-      aaa
+      <div class="wip">
+        Work in progress
+      </div>
     </main>
 
     <%@ include file="/WEB-INF/includes/footer.jspf" %>

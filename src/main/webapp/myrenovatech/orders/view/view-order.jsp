@@ -30,7 +30,7 @@
       %>
 
       <%
-        if (Objects.equals(request.getParameter("error"), "cancel_failed")) {
+        if ("cancel_failed".equals(request.getParameter("error"))) {
       %>
 
       <div class="error-box">
@@ -123,7 +123,7 @@
 
               <div class="order-list-item-info">
                 <span><a href="${pageContext.request.contextPath}/products/?prodId=<%= p.getId() %>&pvId=<%= pv.getId() %>"><%= p.getBrand() %>, <%= p.getModel() %></a></span>
-                <span><div class="vColor" style="background-color: <%= pv.getHexColor() %>"></div> <%= pv.getStorage() %> GB - <%= FieldValidator.formatEuroPrice(i.getPrice()) %> - <%= i.getQt() %> pz.</span>
+                <span><div class="vColor" style="background-color: <%= pv.getHexColor() %>"></div> <%= pv.getStorage() %> GB - <%= FieldValidator.formatEuroPrice(i.getPrice()) %> - <%= i.getQt() %> pcs.</span>
               </div>
 
               <div class="order-list-item-total-price">

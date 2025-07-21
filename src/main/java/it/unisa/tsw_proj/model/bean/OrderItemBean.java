@@ -9,6 +9,13 @@ public class OrderItemBean {
         this.qt = qt;
     }
 
+    public OrderItemBean(int idProd, int idProdVar, double price, int qt) {
+        this.idProd = idProd;
+        this.idProdVar = idProdVar;
+        this.price = price;
+        this.qt = qt;
+    }
+
     // Metodi di accesso
     public int getId() {
         return id;
@@ -32,6 +39,14 @@ public class OrderItemBean {
 
     public double getTotal() {
         return price * qt;
+    }
+
+    public int getIdProd() {
+        return idProd;
+    }
+
+    public int getIdProdVar() {
+        return idProdVar;
     }
 
     // Metodi modificatori
@@ -59,6 +74,8 @@ public class OrderItemBean {
     private int id;
     private int orderId;
     private ProductBean product;
+    private int idProd;
+    private int idProdVar;
     private double price;
     private int qt;
 }

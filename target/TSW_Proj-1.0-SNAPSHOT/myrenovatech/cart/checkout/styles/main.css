@@ -1,0 +1,147 @@
+.checkout-wrapper {
+    margin: 1em;
+    padding: 1em;
+    border-radius: 20px;
+    background-color: white;
+    box-shadow: black 1px 2px 5px 0;
+    gap: 0.5em;
+}
+
+.order-details, .checkout-wrapper, .addresses-wrapper, .products-wrapper, .summary-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+h2, h3 {
+    margin: 0;
+}
+
+.checkout-wrapper form {
+    display: flex;
+    flex-direction: row;
+}
+
+.order-details, .checkout-wrapper form, .addresses-wrapper, .products-wrapper {
+    gap: 0.5em;
+}
+
+.addresses-wrapper, .products-wrapper, .summary-wrapper {
+    padding: 1em;
+    border-radius: 15px;
+    border: 1px solid gray;
+}
+
+.address-item {
+    display: flex;
+    gap: 0.5em;
+    padding: 0.5em;
+    border-radius: 15px;
+    border: 1px solid gray;
+}
+
+.address-item label {
+    width: 100%;
+}
+
+.address-item input {
+    margin: 0;
+}
+
+.product-item {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid gray;
+    gap: 0.5em;
+}
+
+.product-item:last-child {
+    border-bottom: none;
+}
+
+.product-item-details {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.product-image-wrapper {
+    width: 7.5em;
+    height: 7.5em;
+}
+
+.product-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 15px;
+}
+
+.product-item-details-color {
+    display: inline-flex;
+    gap: 0.5em;
+    align-items: center;
+}
+
+.product-item-color {
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    border: 1px solid black;
+}
+
+.summary-wrapper {
+    justify-content: space-between;
+}
+
+.summary-wrapper div {
+    display: flex;
+    flex-direction: column;
+}
+
+.summary-wrapper .total-price {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-right: 0.5em;
+}
+
+.summary-wrapper button {
+    padding: 0.5em ;
+    font-family: "Poppins", sans-serif;
+    cursor: pointer;
+    outline: none;
+    border: 1px solid gray;
+    border-radius: 15px;
+    background-color: #ffd814;
+    width: 100%;
+}
+
+.summary-wrapper button:hover {
+    background-color: #ffce12;
+}
+
+.summary-wrapper button:active {
+    background-color: #f8bd19;
+}
+
+.no-result {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1em;
+    margin: 1em;
+    border-radius: 15px;
+    border: 1px solid #6c0000;
+    background-color: #d30000;
+}
+
+@media (max-width: 990px) {
+    .checkout-wrapper {
+        margin: 0;
+        border-radius: 0;
+        width: 100%;
+    }
+
+    .checkout-wrapper form {
+        flex-direction: column;
+    }
+}

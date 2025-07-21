@@ -18,6 +18,10 @@
             "/", "/catalogue/", "/swap/", "/sell/", "/about-us/", "/reviews/", "/contact-us/"
     };
 
+    final String[] FINAL_PAGES_LINKS = {
+            "/", "/catalogue/view-catalogue.jsp", "/swap/", "/sell/", "/about-us/", "/reviews/", "/contact-us/"
+    };
+
     String uri = request.getRequestURI();
     String logoLink = uri.equals(PAGES_LINKS[0]) ? "javascript:void(0)" : "/";
 
@@ -60,7 +64,7 @@
             <div>
                 <nav>
                     <% for (int i = 0; i < PAGES.length; i++) {
-                        boolean thisPage = uri.equals(PAGES_LINKS[i]); %>
+                        boolean thisPage = uri.equals(FINAL_PAGES_LINKS[i]); %>
                     <a href="<%= thisPage ? "javascript:void(0)" : PAGES_LINKS[i] %>" <%= thisPage ? "class=\"selected\"" : "" %>>
                         <%= PAGES[i] %>
                     </a>
@@ -109,7 +113,7 @@
         </div>
 
         <% for (int i = 0; i < PAGES.length; i++) {
-            boolean thisPage = uri.equals(PAGES_LINKS[i]); %>
+            boolean thisPage = uri.equals(FINAL_PAGES_LINKS[i]); %>
         <a href="<%= thisPage ? "javascript:void(0)" : PAGES_LINKS[i] %>" <%= thisPage ? "class=\"selected\"" : "" %>>
             <%= PAGES[i] %>
         </a>

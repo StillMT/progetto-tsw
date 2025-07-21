@@ -9,104 +9,86 @@ import it.unisa.tsw_proj.model.dao.ProductDAO;
 import it.unisa.tsw_proj.utils.SessionSetter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.*;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet(urlPatterns = { "/myrenovatech/cart/cartServlet", "/myrenovatech/cart/" })
+@WebServlet(urlPatterns = {"/myrenovatech/cart/cartServlet", "/myrenovatech/cart/"})
 public class CartServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        switch (request.getRequestURI()) {
-            case "/myrenovatech/cart/cartServlet":
-                String action = request.getParameter("action");
-                if (action != null) {
-                    int cartId = parseInt(request.getParameter("cartId"));
-                    if (cartId > 0) {
-                        boolean result = false;
-                        Writer w = response.getWriter();
+        String uri = request.getRequestURI();
+        HttpSession session = request.getSession();
 
-                        HttpSession s = request.getSession();
-                        CartBean cart = (CartBean) s.getAttribute("cart");
-
-                        switch (action) {
-                            case "updateQty":
-                                int qty = parseInt(request.getParameter("qty"));
-                                if (qty < 0) {
-                                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                                    return;
-                                }
-
-                                for (CartedProduct cp : cart.getProductList())
-                                    if (cp.getId() == cartId) {
-                                        cp.setQty(qty);
-                                        result = true;
-                                        break;
-                                    }
-                                break;
-
-                            case "remove":
-                                List<CartedProduct> cpList = cart.getProductList();
-                                for (CartedProduct cp : cpList)
-                                    if (cp.getId() == cartId) {
-                                        result = cpList.remove(cp);
-                                        break;
-                                    }
-                                break;
-
-                            case "toggleSelection":
-                                boolean sel = Boolean.parseBoolean(request.getParameter("toggleSelection"));
-
-                                for (CartedProduct cp : cart.getProductList())
-                                    if (cp.getId() == cartId) {
-                                        cp.setSelected(sel);
-                                        result = true;
-                                        break;
-                                    }
-                                break;
-                        }
-
-                        if (SessionSetter.isLogged(s) && result)
-                            result = CartDAO.createOrUpdateCart(cart, cart.getIdUser(), true);
-
-                        response.setContentType("application/json");
-                        response.setCharacterEncoding("UTF-8");
-                        w.write("{\"result\":" + result + "}");
-                    }
-                    else
-                        response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        if ("/myrenovatech/cart/cartServlet".equals(uri)) {
+            handleCartAction(request, response, session);
+        } else if ("/myrenovatech/cart/".equals(uri)) {
+            CartBean cart = (CartBean) session.getAttribute("cart");
+            if (cart != null) {
+                List<ProductBean> productList = new ArrayList<>();
+                for (CartedProduct cp : cart.getProductList()) {
+                    productList.add(ProductDAO.doGetProduct(cp.getIdProd(), cp.getIdVar()));
                 }
+                request.setAttribute("prod_list", productList);
+            }
+            request.getRequestDispatcher("/myrenovatech/cart/view-cart.jsp").forward(request, response);
+        } else {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        }
+    }
+
+    private void handleCartAction(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws IOException {
+        String action = request.getParameter("action");
+        int cartId = parseInt(request.getParameter("cartId"));
+        if (action == null || cartId <= 0) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        CartBean cart = (CartBean) session.getAttribute("cart");
+        if (cart == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        boolean result = false;
+
+        switch (action) {
+            case "updateQty":
+                int qty = parseInt(request.getParameter("qty"));
+                if (qty < 0) {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                    return;
+                }
+                result = updateQty(cart, cartId, qty);
                 break;
 
-            case "/myrenovatech/cart/":
-                CartBean cart = (CartBean) request.getSession().getAttribute("cart");
-                if (cart != null) {
-                    List<ProductBean> pList = new ArrayList<>();
-
-                    for (CartedProduct cp : cart.getProductList())
-                        pList.add(ProductDAO.doGetProduct(cp.getIdProd(), cp.getIdVar()));
-                    request.setAttribute("prod_list", pList);
-                }
-
-                request.getRequestDispatcher("/myrenovatech/cart/view-cart.jsp").forward(request, response);
+            case "remove":
+                result = removeFromCart(cart, cartId);
                 break;
 
-            default:
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            case "toggleSelection":
+                boolean selected = Boolean.parseBoolean(request.getParameter("toggleSelection"));
+                result = toggleSelection(cart, cartId, selected);
                 break;
         }
+
+        if (result && SessionSetter.isLogged(session))
+            result = CartDAO.createOrUpdateCart(cart, cart.getIdUser(), true);
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        Writer writer = response.getWriter();
+        writer.write("{\"result\":" + result + "}");
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (!request.getRequestURI().equals("/myrenovatech/cart/cartServlet")) {
+        if (!"/myrenovatech/cart/cartServlet".equals(request.getRequestURI())) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
@@ -116,20 +98,18 @@ public class CartServlet extends HttpServlet {
         String itemVariantId = request.getParameter("pVariantId");
         String qtyStr = request.getParameter("qty");
 
-        int qty;
-        int pId;
-        int pVarId;
+        if (action == null || (!action.equals("addToCart") && !action.equals("buyNow")) ||
+                itemId == null || itemVariantId == null || qtyStr == null) {
+            sendError(response);
+            return;
+        }
 
-        if ((action != null && (action.equals("addToCart") || action.equals("buyNow"))) && itemId != null && itemVariantId != null && qtyStr != null)
-            try {
-                qty = Integer.parseInt(qtyStr);
-                pId = Integer.parseInt(itemId);
-                pVarId = Integer.parseInt(itemVariantId);
-            } catch (NumberFormatException _) {
-                sendError(response);
-                return;
-            }
-        else {
+        int qty, pId, pVarId;
+        try {
+            qty = Integer.parseInt(qtyStr);
+            pId = Integer.parseInt(itemId);
+            pVarId = Integer.parseInt(itemVariantId);
+        } catch (NumberFormatException e) {
             sendError(response);
             return;
         }
@@ -139,24 +119,52 @@ public class CartServlet extends HttpServlet {
             return;
         }
 
-        HttpSession s = request.getSession();
-        CartBean cart = (CartBean) s.getAttribute("cart");
+        HttpSession session = request.getSession();
+        CartBean cart = (CartBean) session.getAttribute("cart");
         if (cart == null)
             cart = new CartBean();
 
-        cart.addProduct(-1 ,pId, pVarId, qty, true);
+        cart.addProduct(-1, pId, pVarId, qty, true);
 
-        if (SessionSetter.isLogged(s)) {
-            UserBean u = (UserBean) s.getAttribute("user");
-            CartDAO.createOrUpdateCart(cart, u.getId(), true);
+        if (SessionSetter.isLogged(session)) {
+            UserBean user = (UserBean) session.getAttribute("user");
+            CartDAO.createOrUpdateCart(cart, user.getId(), true);
         }
 
-        s.setAttribute("cart", cart);
+        session.setAttribute("cart", cart);
 
-        if (action.equals("buyNow"))
+        if ("buyNow".equals(action))
             response.sendRedirect("/myrenovatech/cart/checkout/?pVarId=" + pVarId);
         else
             response.sendRedirect("/myrenovatech/cart/?result=adding_succesfully");
+    }
+
+    private boolean updateQty(CartBean cart, int cartId, int qty) {
+        for (CartedProduct cp : cart.getProductList())
+            if (cp.getId() == cartId) {
+                cp.setQty(qty);
+                return true;
+            }
+        return false;
+    }
+
+    private boolean removeFromCart(CartBean cart, int cartId) {
+        List<CartedProduct> cpList = cart.getProductList();
+        for (CartedProduct cp : cpList)
+            if (cp.getId() == cartId)
+                return cpList.remove(cp);
+
+        return false;
+    }
+
+    private boolean toggleSelection(CartBean cart, int cartId, boolean selected) {
+        for (CartedProduct cp : cart.getProductList())
+            if (cp.getId() == cartId) {
+                cp.setSelected(selected);
+                return true;
+            }
+
+        return false;
     }
 
     private void sendError(HttpServletResponse response) throws IOException {
@@ -164,12 +172,10 @@ public class CartServlet extends HttpServlet {
     }
 
     private int parseInt(String str) {
-        int num = -1;
-
         try {
-            num = Integer.parseInt(str);
-        } catch (NumberFormatException _) { }
-
-        return num;
+            return Integer.parseInt(str);
+        } catch (NumberFormatException e) {
+            return -1;
+        }
     }
 }

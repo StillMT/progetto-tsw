@@ -29,6 +29,7 @@
     background-color: white;
     min-width: 40em;
     box-sizing: border-box;
+    gap: 0.5em;
 }
 
 h2 {

@@ -73,12 +73,22 @@ function populateCustList(json, searchInput) {
 }
 
 function addOrderRow(nr, date, total, address, state, tracking) {
+    function formatPrice(price) {
+        const parts = price.toFixed(2).split('.');
+        let integerPart = parts[0];
+        const decimalPart = parts[1];
+
+        integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+        return '€' + integerPart + ',' + decimalPart;
+    }
+
     const row = document.createElement("div");
     row.className = "row";
     row.innerHTML = `
             <span>${nr}</span>
             <span>${date}</span>
-            <span>${total.toFixed(2)}</span>
+            <span>${formatPrice(total)}</span>
             <span>${address}</span>
             <span>${state}</span>
             <span>

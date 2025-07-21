@@ -42,9 +42,10 @@
 
                 <div class="cart-wrapper-items">
                     <%
-                        if (cart != null && !cart.getProductList().isEmpty()) {
-                            List<ProductBean> pList = (List<ProductBean>) request.getAttribute("prod_list");
-                            List<CartedProduct> cpList = cart.getProductList();
+                        List<ProductBean> pList = (List<ProductBean>) request.getAttribute("prod_list");
+                        List<CartedProduct> cpList;
+
+                        if (cart != null && !(cpList = cart.getProductList()).isEmpty() && pList != null && !pList.isEmpty()) {
                             for (int i = 0; i < pList.size() && i < cpList.size(); i++) {
                                 CartedProduct currentCP = cpList.get(i);
                                 ProductBean currentP = pList.get(i);

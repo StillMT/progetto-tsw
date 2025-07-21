@@ -3,6 +3,7 @@ package it.unisa.tsw_proj.model.dao;
 import it.unisa.tsw_proj.model.bean.ProductBean;
 import it.unisa.tsw_proj.model.bean.ProductVariantBean;
 import it.unisa.tsw_proj.utils.DriverManagerConnectionPool;
+import it.unisa.tsw_proj.utils.FieldValidator;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -38,6 +39,38 @@ public class ProductVariantDAO {
         }
 
         return list;
+    }
+
+    public static double doGetProductPrice(int id, int pvId) {
+        final String sql = "SELECT sale_expire_date, sale_final_price, price FROM product_variant WHERE id = ? AND id_product = ?";
+        double price = -1;
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            con = DriverManagerConnectionPool.getConnection();
+            ps = con.prepareStatement(sql);
+
+            ps.setInt(1, pvId);
+            ps.setInt(2, id);
+
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                double normal_price = rs.getDouble("price");
+                double sale_price = rs.getDouble("sale_final_price");
+                LocalDateTime sale_date = rs.getObject("sale_expire_date", LocalDateTime.class);
+
+                price = FieldValidator.validateDiscount(sale_date) ? sale_price : normal_price;
+            }
+        } catch (SQLException e) {
+            DriverManagerConnectionPool.logSqlError(e, logger);
+        } finally {
+            DriverManagerConnectionPool.closeSqlParams(con, ps, rs);
+        }
+
+        return price;
     }
 
     public static boolean doInsertVariantBatch(ProductBean p, Connection con) {

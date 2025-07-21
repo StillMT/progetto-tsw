@@ -92,6 +92,10 @@ public class OrderBean {
         this.totalPrice = totalPrice;
     }
 
+    public void setShippingCost(double shippingCost) {
+        this.shippingCost = shippingCost;
+    }
+
     public void setAddress(AddressBean address) {
         this.address = address;
     }

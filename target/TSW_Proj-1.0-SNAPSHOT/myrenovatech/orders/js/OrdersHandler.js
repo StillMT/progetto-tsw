@@ -8,6 +8,16 @@
         "DELIVERED" : delivered
     };
 
+    function formatPrice(price) {
+        const parts = price.toFixed(2).split('.');
+        let integerPart = parts[0];
+        const decimalPart = parts[1];
+
+        integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+        return '€' + integerPart + ',' + decimalPart;
+    }
+
     const noEls = document.createElement("div");
     noEls.classList.add("no-products-message");
     noEls.textContent = noElements;
@@ -48,7 +58,7 @@
         row.innerHTML = `
             <span>${el.nr}</span>
             <span>${el.date}</span>
-            <span>${el.totalPrice.toFixed(2)}</span>
+            <span>${formatPrice(el.totalPrice)}</span>
             <span>${el.address}</span>
             <span>${orderState[el.order_state]}</span>
             <span>

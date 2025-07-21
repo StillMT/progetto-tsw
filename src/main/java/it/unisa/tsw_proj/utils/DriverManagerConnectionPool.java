@@ -12,7 +12,7 @@ public final class DriverManagerConnectionPool {
     private DriverManagerConnectionPool() {}
 
     // Attributi
-    private static final String DB_URL = "jdbc:mysql://server:3306/renovatech_db";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/renovatech_db";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "";
     private static final long MAX_IDLE_TIME = 120_000; // 2 minuti

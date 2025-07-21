@@ -15,7 +15,7 @@ public class ProductDAO {
 
     // Metodi
     public static boolean doCheckProductForCart(int id, int pvId, int qty) {
-        final String sql = "SELECT p.id FROM product p JOIN product_variant pv ON pv.id_product = p.id WHERE p.id = ? AND pv.id = ? AND pv.stock >= ?";
+        final String sql = "SELECT p.id FROM product p JOIN product_variant pv ON pv.id_product = p.id WHERE p.id = ? AND pv.id = ? AND pv.stock >= ? AND  p.isDeleted = FALSE";
         boolean result = false;
 
         Connection con = null;

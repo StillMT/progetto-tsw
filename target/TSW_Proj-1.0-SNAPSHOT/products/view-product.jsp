@@ -24,8 +24,8 @@
         return FieldValidator.formatEuroPrice(price);
     }
 
-    String stockMessage(int stock) {
-        return stock > 10 ? "Disponibile" : "Disponibili solo " + stock;
+    String stockMessage(int stock, ResourceBundle langBundle, String pageName) {
+        return stock > 10 ? langBundle.getString(pageName + ".available") : langBundle.getString(pageName + ".availableOnly") + ": " + stock;
     }
 %>
 
@@ -91,12 +91,12 @@
                                     <span id="discount-perc" <%= !selHasDiscount ? "style='display:none'" : "" %>>-<%= selPv.getSalePercentage() %>%</span>
                                     <span class="view-price" id="main-view-price"><%= formatPrice(selHasDiscount ? selPv.getSalePrice() : selPv.getPrice()) %></span>
                                 </span>
-                        <span class="actual-price-wrapper" <%= !selHasDiscount ? "style='display:none'" : "" %>>Prezzo originale: <span id="actual-price"><%= formatPrice(selPv.getPrice()) %></span></span>
-                        <span class="stock-info<%= selPv.getStock() < 1 ? " oos" : "" %>" id="stock-info-main"><%= stockMessage(selPv.getStock()) %></span>
+                        <span class="actual-price-wrapper" <%= !selHasDiscount ? "style='display:none'" : "" %>><%= langBundle.getString(pageName + ".originalPrice") %>: <span id="actual-price"><%= formatPrice(selPv.getPrice()) %></span></span>
+                        <span class="stock-info<%= selPv.getStock() < 1 ? " oos" : "" %>" id="stock-info-main"><%= stockMessage(selPv.getStock(), langBundle, pageName) %></span>
                     </div>
 
                     <div class="product-info-variants-wrapper">
-                        <span class="product-info-variants-wrapper-header">Varianti:</span>
+                        <span class="product-info-variants-wrapper-header"><%= langBundle.getString(pageName + ".variants") %>:</span>
                         <div class="product-info-variants-wrapper-variants">
                             <% for (ProductVariantBean pv : pvl) {
                                 boolean discount = hasDiscount(pv.getSaleExpireDate());
@@ -116,25 +116,25 @@
                                 <% } %>
                                 <span><%= formatPrice(priceToShow) %></span>
                                 <span><%= pv.getStorage() %> GB</span>
-                                <% if (pv.getStock() < 10) { %><span><%= pv.getStock() %> pz.</span><% } %>
+                                <% if (pv.getStock() < 10) { %><span><%= pv.getStock() %> pcs.</span><% } %>
                             </div>
                             <% } %>
                         </div>
                     </div>
 
                     <div class="product-info-description last">
-                        <span class="product-category">Categoria: <span class="product-category-name"><%= request.getAttribute("catName") %></span></span>
+                        <span class="product-category"><%= langBundle.getString(pageName + ".category") %>: <span class="product-category-name"><%= request.getAttribute("catName") %></span></span>
                         <span class="product-info-description-desc"><%= p.getDescription() %></span>
                     </div>
                 </div>
 
                 <div class="product-checkout-options">
                     <span class="view-price" id="checkout-view-price"><%= formatPrice(selHasDiscount ? selPv.getSalePrice() : selPv.getPrice()) %></span>
-                    <span class="stock-info<%= selPv.getStock() < 1 ? " oos" : "" %>" id="stock-info-checkout"><%= stockMessage(selPv.getStock()) %></span>
+                    <span class="stock-info<%= selPv.getStock() < 1 ? " oos" : "" %>" id="stock-info-checkout"><%= stockMessage(selPv.getStock(), langBundle, pageName) %></span>
 
                     <form action="${pageContext.request.contextPath}/myrenovatech/cart/cartServlet" method="post" id="checkout-form">
                         <div>
-                            <label for="qty">Quantità:</label>
+                            <label for="qty"><%= langBundle.getString(pageName + ".amount") %>:</label>
                             <select name="qty" id="qty">
                                 <% if (selPv.getStock() < 1) { %>
                                 <option value="0">0</option>
@@ -144,8 +144,8 @@
                                 <% }} %>
                             </select>
                         </div>
-                        <button id="add-to-cart">Aggiungi al carrello</button>
-                        <button id="buy-now">Acquista ora</button>
+                        <button id="add-to-cart"><%= langBundle.getString(pageName + ".addToCart") %></button>
+                        <button id="buy-now"><%= langBundle.getString(pageName + ".buyNow") %></button>
 
                         <input type="hidden" name="prodId" value="<%= p.getId() %>" />
                         <input type="hidden" id="p-var-id" name="pVariantId" value="<%= selPv.getId() %>" />
@@ -157,8 +157,8 @@
         </main>
 
     <script>
-        const available = "Disponibile";
-        const availableOnly = "Disponibili solo ";
+        const available = "<%= langBundle.getString(pageName + ".available") %>";
+        const availableOnly = "<%= langBundle.getString(pageName + ".availableOnly") %>";
     </script>
     <script src="js/SlideshowHandler.js"></script>
     <script src="js/VariantSelector.js"></script>

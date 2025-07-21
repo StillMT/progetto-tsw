@@ -58,17 +58,17 @@ public class AuthFilter implements Filter {
             return;
         }
 
-        if (path.startsWith(context + CART)) {
-            chain.doFilter(request, response);
-            return;
-        }
-
         if (path.startsWith(context + CHECKOUT)) {
             if (logged)
                 chain.doFilter(request, response);
             else
                 res.sendRedirect(LOGIN_PAGE);
 
+            return;
+        }
+
+        if (path.startsWith(context + CART)) {
+            chain.doFilter(request, response);
             return;
         }
 

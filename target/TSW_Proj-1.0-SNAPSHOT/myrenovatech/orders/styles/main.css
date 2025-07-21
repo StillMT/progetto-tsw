@@ -1,3 +1,7 @@
+.main-cont {
+    flex-direction: column;
+}
+
 .list {
     background-color: white;
     border-radius: 25px;
@@ -97,6 +101,15 @@
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
+.error-box {
+    padding: 1em;
+    margin: 1em;
+    text-align: center;
+    border-radius: 15px;
+    border: 1px solid darkred;
+    background-color: red;
+}
+
 @media (max-width: 990px) {
     .list {
         margin: 0;
@@ -107,5 +120,11 @@
         display: flex;
         flex-direction: column;
         gap: 0.5em;
+    }
+
+    .error-box {
+        margin: 0;
+        border-radius: 0;
+        width: 100%;
     }
 }

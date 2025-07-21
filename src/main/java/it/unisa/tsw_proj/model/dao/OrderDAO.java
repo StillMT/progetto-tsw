@@ -12,6 +12,78 @@ import java.util.logging.Logger;
 
 public class  OrderDAO {
 
+    public static boolean doInsertOrder(OrderBean order) {
+        String sql = "INSERT INTO `order` VALUES (NULL, ?, ?, CURRENT_TIMESTAMP, ?, ?, 'to_ship', NULL)";
+        boolean result = false;
+
+        Connection con = null;
+        PreparedStatement psOrder = null;
+        PreparedStatement psItem = null;
+        ResultSet rs = null;
+
+        try {
+            con = DriverManagerConnectionPool.getConnection();
+            con.setAutoCommit(false);
+
+            psOrder = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            psOrder.setInt(1, order.getIdUser());
+            psOrder.setString(2, order.getOrderNr());
+            psOrder.setDouble(3, order.getShippingCost());
+            psOrder.setInt(4, order.getAddress().getId());
+
+            if (psOrder.executeUpdate() > 0) {
+                rs = psOrder.getGeneratedKeys();
+
+                if (rs.next()) {
+                    int generatedOrderId = rs.getInt(1);
+
+                    sql = "INSERT INTO order_item VALUES (NULL, ?, ?, ?, ?, ?)";
+                    psItem = con.prepareStatement(sql);
+
+                    for (OrderItemBean item : order.getOrderItems()) {
+                        psItem.setInt(1, generatedOrderId);
+                        psItem.setInt(2, item.getIdProd());
+                        psItem.setInt(3, item.getIdProdVar());
+                        psItem.setDouble(4, item.getPrice());
+                        psItem.setInt(5, item.getQt());
+
+                        psItem.addBatch();
+                    }
+
+                    int[] results = psItem.executeBatch();
+                    result = true;
+                    for (int res : results) {
+                        if (res < 1) {
+                            con.rollback();
+                            result = false;
+                            break;
+                        }
+                    }
+
+                    if (result) con.commit();
+                }
+            }
+
+        } catch (SQLException e) {
+            DriverManagerConnectionPool.logSqlError(e, logger);
+            try {
+                if (con != null) con.rollback();
+            } catch (SQLException ex) {
+                DriverManagerConnectionPool.logSqlError(ex, logger);
+            }
+        } finally {
+            try {
+                if (con != null) con.setAutoCommit(true);
+            } catch (SQLException e) {
+                DriverManagerConnectionPool.logSqlError(e, logger);
+            }
+            DriverManagerConnectionPool.closeSqlParams(con, psOrder, rs);
+            DriverManagerConnectionPool.closeSqlParams(null, psItem, null);
+        }
+
+        return result;
+    }
+
     public static List<OrderBean> doGetOrdersFromIdUser(int id) {
         final String sql = "SELECT o.id, o.id_user, o.order_nr, o.date, o.shipping_costs, o.state AS order_state, o.tracking, a.street, a.city, a.state AS address_state, a.zip, a.country, SUM(oi.price * oi.qt) AS total_price FROM `order` o JOIN address a ON o.id_address = a.id JOIN order_item oi ON o.id = oi.id_order WHERE o.id_user = ? GROUP BY o.id, o.id_user, o.order_nr, o.date, o.shipping_costs, o.state, o.tracking, a.street, a.city, a.state, a.zip, a.country";
         List<OrderBean> orders = new ArrayList<>();
